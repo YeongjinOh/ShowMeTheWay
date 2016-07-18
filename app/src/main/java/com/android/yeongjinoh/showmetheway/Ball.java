@@ -1,74 +1,74 @@
 package com.android.yeongjinoh.showmetheway;
 
+import android.graphics.Paint;
+
 /**
  * Created by yeongjinoh on 2016-07-18.
  */
 public class Ball {
 
-    private int index;
+    // color paint
+    private Paint paint;
 
     // radius
-    private double r;
+    private float r;
 
     // position
-    private double x;
-    private double y;
+    private float x;
+    private float y;
 
     // velocity
-    private double vx;
-    private double vy;
+    private float vx;
+    private float vy;
 
 
     // constructors
-    public Ball (int index) {
-        this.index = index;
-    }
-    public Ball (int index, double r) {
-        this.index = index;
+    public Ball (Paint paint, float r) {
+        this.paint = paint;
         this.r = r;
     }
-    public Ball (int index, double r, double x, double y) {
-        this.index = index;
+    public Ball (Paint paint, float r, float x, float y) {
+        this.paint = paint;
         this.r = r;
         this.x = x;
         this.y = y;
     }
 
     // get and set methos for all variables
-    public void setIndex(int index) {
-        this.index = index;
+    public void setPaint(Paint paint) {
+        this.paint = paint;
     }
-    public int getIndex() {
-        return index;
+    public Paint getPaint() {
+        return paint;
     }
-    public void setR(double r) {
+    public void setR(float r) {
         this.r = r;
     }
-    public double getR() {
+    public float getR() {
         return r;
     }
-    public void setX(double x) {
+    public void setX(float x) {
         this.x = x;
     }
-    public double getX() {
+    public float getX() {
         return x;
     }
-    public void setY(double y) {
+    public void setY(float y) {
         this.y = y;
     }
-    public double getY() {
+    public float getY() {
         return y;
     }
-    public void setVx(double vx) {
+    public void setVx(float vx) {
         this.vx = vx;
     }
-    public double getVx() {
+    public float getVx() {
         return vx;
     }
-    public void setVy(double vy) {
+    public void setVy(float vy) {
         this.vy = vy;
     }
-    public double getVy() {
+    public float getVy() {
         return vy;
     }
 }

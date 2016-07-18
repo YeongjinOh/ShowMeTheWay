@@ -23,8 +23,5 @@ public class SimulatorActivity extends Activity {
                 finish();
             }
         });
-
-
-
     }
 }
