@@ -20,11 +20,21 @@ public class SimulatorActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simulation);
 
+        final BillardTableView billardTableView = (BillardTableView) findViewById(R.id.billiardTableView);
+
         Button buttonSimulMenu = (Button) findViewById(R.id.btnSimulMenu);
         buttonSimulMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
+            }
+        });
+
+        Button buttonSimulHit = (Button) findViewById(R.id.btnSimulHit);
+        buttonSimulHit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                billardTableView.hit();
             }
         });
 /*

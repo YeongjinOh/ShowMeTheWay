@@ -47,6 +47,7 @@
             android:layout_weight="1"
             android:background="#ff00aa00">
             <com.android.yeongjinoh.showmetheway.BillardTableView
+                android:id="@+id/billiardTableView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
@@ -89,6 +90,7 @@
                 android:layout_centerInParent="true"
             />
             <Button
+                android:id="@+id/btnSimulHit"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:text="Hit"

@@ -27,8 +27,9 @@ public class BillardTableView extends ImageView {
     private final float dt = 0.01F;
     private final float margin = 70.0F;
     private final float surfaceFrictionalRatio = 0.1F;
+    private double angle = 0;
 
-    private boolean isStart = true;
+    private boolean isStart = false;
 
     Bitmap table;
 
@@ -53,7 +54,6 @@ public class BillardTableView extends ImageView {
             h = w*2;
         }
 
-        new UpdateThread().start();
     }
 
     private void init() {
@@ -68,7 +68,7 @@ public class BillardTableView extends ImageView {
 
         // initialize balls
         balls = new ArrayList<Ball>();
-        Ball whiteBall = new Ball(white,radius,radius,5*radius,2000,-1500);
+        Ball whiteBall = new Ball(white,radius,width/4,height/9,1000,1500);
         Ball yellowBall = new Ball(yellow,radius,2*radius,height-2*radius,0.0000000001F,0);
         Ball redBall = new Ball(red,radius,width-radius,5*radius,0,0.0000000001F);
         Ball yellowBall2 = new Ball(yellow,radius, width-2*radius, height-2*radius, 0.0000000001F, 0);
@@ -80,11 +80,33 @@ public class BillardTableView extends ImageView {
         balls.add(yellowBall2);
         balls.add(redBall2);
         balls.add(yellowBall3);
+
     }
 
+    public void hit() {
+        if (!isStart) {
+            isStart = true;
+            new UpdateThread().start();
+        }
+    }
+
+
+    private void drawCue (Canvas canvas) {
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.FILL);
+        paint.setARGB(200,188,143,143);
+        paint.setStrokeWidth(20*scaleFactor);
+        Ball white = balls.get(0);
+        float x = white.getX(), y = white.getY();
+        canvas.drawLine((float)(x+Math.cos(angle)*radius*1.2+margin)*scaleFactor,(float)(y+Math.sin(angle)*radius*1.2+margin)*scaleFactor,
+                (float)(x+Math.cos(angle)*radius*7.2+margin)*scaleFactor,(float)(y+Math.sin(angle)*radius*7.2+margin)*scaleFactor,paint);
+    }
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         drawBalls(canvas);
+        if (!isStart) {
+            drawCue(canvas);
+        }
     }
 
     private void drawBalls (Canvas canvas) {
@@ -138,14 +160,14 @@ public class BillardTableView extends ImageView {
                     thetaJ = Math.atan2(vyJ, vxJ);
 
                     // set new velocity
-                    ballI.setVx((float)((norm(vxJ,vyJ)*Math.cos(thetaJ-theta)*Math.cos(theta)
-                            - norm(vxI,vyI)*Math.sin(thetaI-theta)*Math.sin(theta))*(1+surfaceFrictionalRatio)));
-                    ballI.setVy((float)((norm(vxJ,vyJ)*Math.cos(thetaJ-theta)*Math.sin(theta)
-                            + norm(vxI,vyI)*Math.sin(thetaI-theta)*Math.cos(theta))*(1+surfaceFrictionalRatio)));
-                    ballJ.setVx((float)((norm(vxI,vyI)*Math.cos(thetaI-theta)*Math.cos(theta)
-                            - norm(vxJ,vyJ)*Math.sin(thetaJ-theta)*Math.sin(theta))*(1+surfaceFrictionalRatio)));
-                    ballJ.setVy((float)((norm(vxI,vyI)*Math.cos(thetaI-theta)*Math.sin(theta)
-                            + norm(vxJ,vyJ)*Math.sin(thetaJ-theta)*Math.cos(theta))*(1+surfaceFrictionalRatio)));
+                    ballI.setVx((float)(norm(vxJ,vyJ)*Math.cos(thetaJ-theta)*Math.cos(theta)
+                            - norm(vxI,vyI)*Math.sin(thetaI-theta)*Math.sin(theta)));
+                    ballI.setVy((float)(norm(vxJ,vyJ)*Math.cos(thetaJ-theta)*Math.sin(theta)
+                            + norm(vxI,vyI)*Math.sin(thetaI-theta)*Math.cos(theta)));
+                    ballJ.setVx((float)(norm(vxI,vyI)*Math.cos(thetaI-theta)*Math.cos(theta)
+                            - norm(vxJ,vyJ)*Math.sin(thetaJ-theta)*Math.sin(theta)));
+                    ballJ.setVy((float)(norm(vxI,vyI)*Math.cos(thetaI-theta)*Math.sin(theta)
+                            + norm(vxJ,vyJ)*Math.sin(thetaJ-theta)*Math.cos(theta)));
 
                 }
             }
@@ -157,7 +179,7 @@ public class BillardTableView extends ImageView {
         Ball iBall, jBall;
         iBall = balls.get(i);
         jBall = balls.get(j);
-        return (norm(iBall.getX()-jBall.getX(), iBall.getY()-jBall.getY()) < 2*radius);
+        return (norm(iBall.getX()-jBall.getX(), iBall.getY()-jBall.getY()) < iBall.getR()+jBall.getR());
     }
 
 
@@ -177,13 +199,13 @@ public class BillardTableView extends ImageView {
     class UpdateThread extends Thread {
         public void run() {
             int cnt = 0;
-            while(isStart && cnt < 500000) {
+            while(isStart) {
                 try {
                     Thread.sleep((long)(1000*dt));
                     move();
 
-                    if (cnt%10000 == 0 && checkAllStop()) {
-                        break;
+                    if (cnt%10000 == 0 && checkAllStop() || cnt > 50000) {
+                        isStart = false;
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
