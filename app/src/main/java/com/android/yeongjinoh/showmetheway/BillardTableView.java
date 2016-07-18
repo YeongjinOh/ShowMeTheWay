@@ -7,6 +7,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -15,7 +17,7 @@ import java.util.ArrayList;
 /**
  * Created by yeongjinoh on 2016-07-18.
  */
-public class BillardTableView extends ImageView {
+public class BillardTableView extends ImageView implements View.OnTouchListener {
 
     private ArrayList<Ball> balls;
 
@@ -27,7 +29,9 @@ public class BillardTableView extends ImageView {
     private final float dt = 0.01F;
     private final float margin = 70.0F;
     private final float surfaceFrictionalRatio = 0.1F;
-    private double angle = 0;
+    private final float power = 1000;
+    private double angle = Math.PI/4;
+
 
     private boolean isStart = false;
 
@@ -36,7 +40,7 @@ public class BillardTableView extends ImageView {
     public BillardTableView(Context context, AttributeSet attrs) {
 
         super(context, attrs);
-
+        setOnTouchListener(this);
         init();
 
         // get width and height of the background image
@@ -68,11 +72,11 @@ public class BillardTableView extends ImageView {
 
         // initialize balls
         balls = new ArrayList<Ball>();
-        Ball whiteBall = new Ball(white,radius,width/4,height/9,1000,1500);
+        Ball whiteBall = new Ball(white,radius,width/4,height/9,0.0000000001F,0);
         Ball yellowBall = new Ball(yellow,radius,2*radius,height-2*radius,0.0000000001F,0);
-        Ball redBall = new Ball(red,radius,width-radius,5*radius,0,0.0000000001F);
+        Ball redBall = new Ball(red,radius,width-radius,5*radius,0.0000000001F,0);
         Ball yellowBall2 = new Ball(yellow,radius, width-2*radius, height-2*radius, 0.0000000001F, 0);
-        Ball redBall2 = new Ball(red,radius,width/2,5*radius,0,0.0000000001F);
+        Ball redBall2 = new Ball(red,radius,width/2,5*radius,0.0000000001F,0);
         Ball yellowBall3 = new Ball(yellow,radius, width/2, height-2*radius, 0.0000000001F, 0);
         balls.add(whiteBall);
         balls.add(yellowBall);
@@ -86,6 +90,9 @@ public class BillardTableView extends ImageView {
     public void hit() {
         if (!isStart) {
             isStart = true;
+            Ball white = balls.get(0);
+            white.setVx(-power*(float)Math.cos(angle));
+            white.setVy(-power*(float)Math.sin(angle));
             new UpdateThread().start();
         }
     }
@@ -99,7 +106,7 @@ public class BillardTableView extends ImageView {
         Ball white = balls.get(0);
         float x = white.getX(), y = white.getY();
         canvas.drawLine((float)(x+Math.cos(angle)*radius*1.2+margin)*scaleFactor,(float)(y+Math.sin(angle)*radius*1.2+margin)*scaleFactor,
-                (float)(x+Math.cos(angle)*radius*7.2+margin)*scaleFactor,(float)(y+Math.sin(angle)*radius*7.2+margin)*scaleFactor,paint);
+                (float)(x+Math.cos(angle)*radius*17.2+margin)*scaleFactor,(float)(y+Math.sin(angle)*radius*17.2+margin)*scaleFactor,paint);
     }
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -175,6 +182,8 @@ public class BillardTableView extends ImageView {
 
     }
 
+
+
     private boolean checkConflict(int i, int j) {
         Ball iBall, jBall;
         iBall = balls.get(i);
@@ -195,6 +204,31 @@ public class BillardTableView extends ImageView {
         }
         return true;
     }
+
+    private float prevX;
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                prevX = event.getRawX();
+                break;
+
+            case MotionEvent.ACTION_MOVE:
+                float rawX = event.getRawX();
+                if (prevX > rawX) {
+                    angle += (float) Math.PI/180;
+                } else {
+                    angle -= (float) Math.PI/180;
+                }
+                prevX = rawX;
+                invalidate();
+
+                break;
+        }
+        return true;
+    }
+
 
     class UpdateThread extends Thread {
         public void run() {
