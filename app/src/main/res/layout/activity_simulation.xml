@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#377a9f">
 
     <LinearLayout
         android:orientation="vertical"
@@ -14,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="11"
-            android:background="#ffaa0000">
+            >
             <Button
                 android:id="@+id/btnSimulMenu"
                 android:layout_width="60dp"
@@ -27,13 +28,15 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-                <Button
-                    android:id="@+id/btnSimulChange"
+                <TextView
+                    android:id="@+id/scoreText"
                     android:layout_width="120dp"
                     android:layout_height="30dp"
                     android:layout_margin="10dp"
-                    android:text="Change Ball"
+                    android:text="Score : "
                     android:textSize="15dp"
+                    android:paddingLeft="5dp"
+                    android:gravity="left|center_vertical"
                     android:background="#ffffffff"
                     />
 
@@ -45,7 +48,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:layout_weight="1"
-            android:background="#ff00aa00">
+            >
             <com.android.yeongjinoh.showmetheway.BillardTableView
                 android:id="@+id/billiardTableView"
                 android:layout_width="wrap_content"
@@ -61,7 +64,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="4"
-        android:background="#ff0000aa"
         android:orientation="vertical"
         >
         <FrameLayout
@@ -104,7 +106,13 @@
         </RelativeLayout>
     </LinearLayout>
 
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Small Text"
+        android:id="@+id/textView"
+        android:layout_weight="1" />
 
 
 </LinearLayout>

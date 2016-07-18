@@ -29,9 +29,9 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
     private final float dt = 0.01F;
     private final float margin = 70.0F;
     private final float surfaceFrictionalRatio = 0.1F;
-    private final float power = 1000;
-    private double angle = Math.PI/4;
-
+    private final float power = 3000;
+    private double angle = -Math.PI/4;
+    private double score = 0;
 
     private boolean isStart = false;
 
@@ -135,19 +135,32 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
             Vx = ball.getVx();
             Vy = ball.getVy();
             Vnorm = norm(Vx, Vy);
-            Vx = Vx  * (1-surfaceFrictionalRatio) * (Vnorm - 10) / Vnorm ;
-            Vy = Vy  * (1-surfaceFrictionalRatio) * (Vnorm - 10) / Vnorm ;
+            if (Vnorm < 20F) {
+                Vx = 0;
+                Vy = 0;
+            }  else if (Vnorm < 100F) {
+                Vx = Vx/2;
+                Vy = Vy/2;
+            }  else if (Vnorm < 200F) {
+                Vx = Vx * (1 - 2*surfaceFrictionalRatio*dt);
+                Vy = Vy * (1 - 2*surfaceFrictionalRatio*dt);
+            }  else {
+                Vx = Vx * (1 - surfaceFrictionalRatio*dt);
+                Vy = Vy * (1 - surfaceFrictionalRatio*dt);
+            }
             x += Vx*dt;
             y += Vy*dt;
             ball.setX(x);
             ball.setY(y);
+            ball.setVx(Vx);
+            ball.setVy(Vy);
 
             // check conflict with cushion
             if ((x < radius && Vx < 0)|| (x > width-radius && Vx > 0)) {
-                ball.setVx(-Vx);
+                ball.setVx(-Vx*0.95F);
             }
             if ((y < radius && Vy < 0) || (y > height-radius && Vy > 0)) {
-                ball.setVy(-Vy);
+                ball.setVy(-Vy*0.95F);
             }
         }
 
@@ -160,6 +173,15 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
                     Ball ballI = balls.get(i), ballJ = balls.get(j);
                     float xI = ballI.getX(), yI = ballI.getY(), xJ = ballJ.getX(), yJ = ballJ.getY();
                     float vxI = ballI.getVx(), vyI = ballI.getVy(), vxJ = ballJ.getVx(), vyJ = ballJ.getVy();
+
+                    if (j==0) {
+                        if (ballI.getPaint().getColor() == Color.RED) {
+                            score += 10;
+                        } else if (ballI.getPaint().getColor() == Color.YELLOW) {
+                            score -= 10;
+                        }
+                    }
+
 
                     // get angles using arctan
                     theta = Math.atan2(yJ-yI, xJ-xI);
@@ -198,31 +220,31 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
 
     private boolean checkAllStop() {
         for (int i=0; i<balls.size(); i++) {
-            if (norm (balls.get(i).getVx(), balls.get(i).getVy()) > 1) {
+            if (norm (balls.get(i).getVx(), balls.get(i).getVy()) > 1.0F) {
                 return false;
             }
         }
         return true;
     }
 
-    private float prevX;
 
+    private float prevY;
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                prevX = event.getRawX();
+                prevY = event.getRawY();
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                float rawX = event.getRawX();
-                if (prevX > rawX) {
-                    angle += (float) Math.PI/180;
+                float rawY = event.getRawY();
+                if (prevY > rawY) {
+                    angle += (float) Math.PI/120;
                 } else {
-                    angle -= (float) Math.PI/180;
+                    angle -= (float) Math.PI/120;
                 }
-                prevX = rawX;
-                invalidate();
+                prevY = rawY;
+                postInvalidate();
 
                 break;
         }
@@ -238,8 +260,9 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
                     Thread.sleep((long)(1000*dt));
                     move();
 
-                    if (cnt%10000 == 0 && checkAllStop() || cnt > 50000) {
+                    if ((cnt%10000 == 0 && checkAllStop()) || cnt > 50000) {
                         isStart = false;
+                        postInvalidate();;
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();

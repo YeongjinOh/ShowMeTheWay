@@ -37,14 +37,5 @@ public class SimulatorActivity extends Activity {
                 billardTableView.hit();
             }
         });
-/*
-        Button buttonSimulChange = (Button) findViewById(R.id.btnSimulChange);
-        buttonSimulChange.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setContentView(new BillardTableView(getApplicationContext()));
-            }
-        });
-*/
     }
 }
