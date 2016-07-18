@@ -13,8 +13,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
-        setContentView(new BillardTableView(this));
-/*
+        //setContentView(new BillardTableView(this));
+
         setContentView(R.layout.activity_main);
 
         // initailize main buttons
@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
-*/
+
+
+
     }
 }

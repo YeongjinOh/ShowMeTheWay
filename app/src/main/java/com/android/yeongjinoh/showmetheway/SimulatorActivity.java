@@ -1,10 +1,14 @@
 package com.android.yeongjinoh.showmetheway;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 /**
  * Created by yeongjinoh on 2016-07-18.
@@ -23,5 +27,14 @@ public class SimulatorActivity extends Activity {
                 finish();
             }
         });
+/*
+        Button buttonSimulChange = (Button) findViewById(R.id.btnSimulChange);
+        buttonSimulChange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setContentView(new BillardTableView(getApplicationContext()));
+            }
+        });
+*/
     }
 }

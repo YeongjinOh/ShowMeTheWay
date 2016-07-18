@@ -33,6 +33,14 @@ public class Ball {
         this.x = x;
         this.y = y;
     }
+    public Ball (Paint paint, float r, float x, float y, float vx, float vy) {
+        this.paint = paint;
+        this.r = r;
+        this.x = x;
+        this.y = y;
+        this.vx = vx;
+        this.vy = vy;
+    }
 
     // get and set methos for all variables
     public void setPaint(Paint paint) {
