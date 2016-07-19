@@ -2,6 +2,7 @@ package com.android.yeongjinoh.showmetheway;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 /**
  * Created by yeongjinoh on 2016-07-18.
@@ -34,6 +36,13 @@ public class SimulatorActivity extends Activity {
         buttonSimulHit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SharedPreferences scorePrefs = getSharedPreferences("score", MODE_PRIVATE);
+                if (scorePrefs != null && scorePrefs.contains("score")) {
+                    TextView textView = (TextView) findViewById(R.id.scoreText);
+                    float score = scorePrefs.getFloat("score",-1);
+                    textView.setText("SCORE : "+Float.toString(score));
+                }
+
                 billardTableView.hit();
             }
         });

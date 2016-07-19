@@ -1,11 +1,13 @@
 package com.android.yeongjinoh.showmetheway;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -36,7 +38,7 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
 
     // the other global variables
     private double angle = -Math.PI/4;
-    private double score = 0;
+    private float score = 0.0F;
     public boolean isStart = false;
     private Bitmap table;
 
@@ -188,11 +190,18 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
                     float vxI = ballI.getVx(), vyI = ballI.getVy(), vxJ = ballJ.getVx(), vyJ = ballJ.getVy();
 
                     if (j==0) {
+                        // update score
                         if (ballI.getPaint().getColor() == Color.RED) {
                             score += 10;
                         } else if (ballI.getPaint().getColor() == Color.YELLOW) {
                             score -= 10;
                         }
+
+                        // share score
+                        SharedPreferences scorePrefs = getContext().getSharedPreferences("score",Context.MODE_PRIVATE);
+                        SharedPreferences.Editor scoreEditor = scorePrefs.edit();
+                        scoreEditor.putFloat("score",score);
+                        scoreEditor.commit();
                     }
 
                     // get angles using arctan
@@ -293,7 +302,7 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
 
                     if (checkAllStop() || cnt*dt > 50) {
                         cnt = 0;
-                        Thread.sleep(1000);
+                        Thread.sleep(300);
                         Paint yellow = new Paint();
                         yellow.setColor(Color.YELLOW);
                         AddBall(yellow);
