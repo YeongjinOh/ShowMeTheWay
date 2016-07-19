@@ -75,18 +75,10 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
 
         // initialize balls
         balls = new ArrayList<Ball>();
-        Ball whiteBall = new Ball(white,radius,width/4,height/9,0,0);
-        Ball yellowBall = new Ball(yellow,radius,2*radius,height-2*radius,0,0);
-        Ball redBall = new Ball(red,radius,width-radius,5*radius,0,0);
-        Ball yellowBall2 = new Ball(yellow,radius, width-2*radius, height-2*radius, 0, 0);
-        Ball redBall2 = new Ball(red,radius,width/2,5*radius,0,0);
-        Ball yellowBall3 = new Ball(yellow,radius, width/2, height-2*radius, 0, 0);
-        balls.add(whiteBall);
-        balls.add(yellowBall);
-        balls.add(redBall);
-        balls.add(yellowBall2);
-        balls.add(redBall2);
-        balls.add(yellowBall3);
+        AddBall(white);
+        AddBall(yellow);
+        AddBall(red);
+        AddBall(red);
         
         new UpdateThread().start();
     }
@@ -124,6 +116,18 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
             Ball curBall = balls.get(i);
             canvas.drawCircle((curBall.getX()+margin)*scaleFactor, (curBall.getY()+margin)*scaleFactor, curBall.getR()*scaleFactor, curBall.getPaint());
         }
+    }
+
+    private void AddBall (Paint paint) {
+        float randomX, randomY;
+        randomX = radius + (float)Math.random()*(width-radius);
+        randomY = radius + (float)Math.random()*(height-radius);
+        while (!checkNoConflictWithAnyBall(randomX, randomY)) {
+            randomX = radius + (float)Math.random()*(width-radius);
+            randomY = radius + (float)Math.random()*(height-radius);
+        }
+        // now, given random values doesn't make conflict with any other ball.
+        balls.add(new Ball(paint, radius, randomX, randomY));
     }
 
     public void move() {
@@ -212,6 +216,16 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
 
     }
 
+    // check if the given position with default radius doesn't have conflict with any other balls
+    private boolean checkNoConflictWithAnyBall (float x, float y) {
+        for (int i=0; i<balls.size(); i++) {
+            Ball ball = balls.get(i);
+            if (norm(x-ball.getX(), y-ball.getY()) < radius + ball.getR()) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     // check conflict between two balls
     private boolean checkConflict(int i, int j) {
@@ -278,9 +292,12 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
                     move();
 
                     if (checkAllStop() || cnt*dt > 50) {
-                        isStart = false;
                         cnt = 0;
                         Thread.sleep(1000);
+                        Paint yellow = new Paint();
+                        yellow.setColor(Color.YELLOW);
+                        AddBall(yellow);
+                        isStart = false;
                         postInvalidate();
                         while(!isStart){}
                     }

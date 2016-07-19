@@ -23,15 +23,13 @@ public class Ball {
 
 
     // constructors
-    public Ball (Paint paint, float r) {
-        this.paint = paint;
-        this.r = r;
-    }
     public Ball (Paint paint, float r, float x, float y) {
         this.paint = paint;
         this.r = r;
         this.x = x;
         this.y = y;
+        vx = 0;
+        vy = 0;
     }
     public Ball (Paint paint, float r, float x, float y, float vx, float vy) {
         this.paint = paint;
