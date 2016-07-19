@@ -10,7 +10,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -26,16 +25,20 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
     private final float width = 1224;
     private final float height = 2448;
     private float scaleFactor;
-    private final float dt = 0.01F;
     private final float margin = 70.0F;
+
+    // constants for physical system
+    private final float dt = 0.01F;
+    private final float maximumPower = 4000.0F;
     private final float surfaceFrictionalRatio = 0.1F;
-    private final float power = 3000;
+    private final float cushionConflictChangeRatio = 0.95F;
+    private final float ballConflictChangeRatio = 0.95F;
+
+    // the other global variables
     private double angle = -Math.PI/4;
     private double score = 0;
-
-    private boolean isStart = false;
-
-    Bitmap table;
+    public boolean isStart = false;
+    private Bitmap table;
 
     public BillardTableView(Context context, AttributeSet attrs) {
 
@@ -72,31 +75,30 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
 
         // initialize balls
         balls = new ArrayList<Ball>();
-        Ball whiteBall = new Ball(white,radius,width/4,height/9,0.0000000001F,0);
-        Ball yellowBall = new Ball(yellow,radius,2*radius,height-2*radius,0.0000000001F,0);
-        Ball redBall = new Ball(red,radius,width-radius,5*radius,0.0000000001F,0);
-        Ball yellowBall2 = new Ball(yellow,radius, width-2*radius, height-2*radius, 0.0000000001F, 0);
-        Ball redBall2 = new Ball(red,radius,width/2,5*radius,0.0000000001F,0);
-        Ball yellowBall3 = new Ball(yellow,radius, width/2, height-2*radius, 0.0000000001F, 0);
+        Ball whiteBall = new Ball(white,radius,width/4,height/9,0,0);
+        Ball yellowBall = new Ball(yellow,radius,2*radius,height-2*radius,0,0);
+        Ball redBall = new Ball(red,radius,width-radius,5*radius,0,0);
+        Ball yellowBall2 = new Ball(yellow,radius, width-2*radius, height-2*radius, 0, 0);
+        Ball redBall2 = new Ball(red,radius,width/2,5*radius,0,0);
+        Ball yellowBall3 = new Ball(yellow,radius, width/2, height-2*radius, 0, 0);
         balls.add(whiteBall);
         balls.add(yellowBall);
         balls.add(redBall);
         balls.add(yellowBall2);
         balls.add(redBall2);
         balls.add(yellowBall3);
-
+        
+        new UpdateThread().start();
     }
 
     public void hit() {
         if (!isStart) {
-            isStart = true;
             Ball white = balls.get(0);
-            white.setVx(-power*(float)Math.cos(angle));
-            white.setVy(-power*(float)Math.sin(angle));
-            new UpdateThread().start();
+            white.setVx(-maximumPower*(float)Math.cos(angle));
+            white.setVy(-maximumPower*(float)Math.sin(angle));
+            isStart = true;
         }
     }
-
 
     private void drawCue (Canvas canvas) {
         Paint paint = new Paint();
@@ -108,6 +110,7 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
         canvas.drawLine((float)(x+Math.cos(angle)*radius*1.2+margin)*scaleFactor,(float)(y+Math.sin(angle)*radius*1.2+margin)*scaleFactor,
                 (float)(x+Math.cos(angle)*radius*17.2+margin)*scaleFactor,(float)(y+Math.sin(angle)*radius*17.2+margin)*scaleFactor,paint);
     }
+
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         drawBalls(canvas);
@@ -131,25 +134,30 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
 
             x = ball.getX();
             y = ball.getY();
-
             Vx = ball.getVx();
             Vy = ball.getVy();
+
+            // update velocity
             Vnorm = norm(Vx, Vy);
-            if (Vnorm < 20F) {
+            if (Vnorm < 10.0F) {
                 Vx = 0;
                 Vy = 0;
-            }  else if (Vnorm < 100F) {
-                Vx = Vx/2;
-                Vy = Vy/2;
-            }  else if (Vnorm < 200F) {
-                Vx = Vx * (1 - 2*surfaceFrictionalRatio*dt);
-                Vy = Vy * (1 - 2*surfaceFrictionalRatio*dt);
+            }  else if (Vnorm < 100.0F) {
+                Vx = Vx*0.99F;
+                Vy = Vy*0.99F;
+            }  else if (Vnorm < 500.0F) {
+                Vx = Vx * (1 - surfaceFrictionalRatio*dt) * (Vnorm/500.0F  + 9.0F)/10.0F;
+                Vy = Vy * (1 - surfaceFrictionalRatio*dt) * (Vnorm/500.0F  + 9.0F)/10.0F;
             }  else {
                 Vx = Vx * (1 - surfaceFrictionalRatio*dt);
                 Vy = Vy * (1 - surfaceFrictionalRatio*dt);
             }
+
+            // update position
             x += Vx*dt;
             y += Vy*dt;
+
+            // assign updated values
             ball.setX(x);
             ball.setY(y);
             ball.setVx(Vx);
@@ -157,13 +165,14 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
 
             // check conflict with cushion
             if ((x < radius && Vx < 0)|| (x > width-radius && Vx > 0)) {
-                ball.setVx(-Vx*0.95F);
+                ball.setVx(-Vx*cushionConflictChangeRatio);
             }
             if ((y < radius && Vy < 0) || (y > height-radius && Vy > 0)) {
-                ball.setVy(-Vy*0.95F);
+                ball.setVy(-Vy*cushionConflictChangeRatio);
             }
         }
 
+        // check conflict between two balls
         for (int i=1; i<balls.size(); i++) {
             for (int j=0; j<i; j++) {
                 if (checkConflict(i, j)) {
@@ -182,7 +191,6 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
                         }
                     }
 
-
                     // get angles using arctan
                     theta = Math.atan2(yJ-yI, xJ-xI);
                     thetaI = Math.atan2(vyI, vxI);
@@ -190,13 +198,13 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
 
                     // set new velocity
                     ballI.setVx((float)(norm(vxJ,vyJ)*Math.cos(thetaJ-theta)*Math.cos(theta)
-                            - norm(vxI,vyI)*Math.sin(thetaI-theta)*Math.sin(theta)));
+                            - norm(vxI,vyI)*Math.sin(thetaI-theta)*Math.sin(theta))*ballConflictChangeRatio);
                     ballI.setVy((float)(norm(vxJ,vyJ)*Math.cos(thetaJ-theta)*Math.sin(theta)
-                            + norm(vxI,vyI)*Math.sin(thetaI-theta)*Math.cos(theta)));
+                            + norm(vxI,vyI)*Math.sin(thetaI-theta)*Math.cos(theta))*ballConflictChangeRatio);
                     ballJ.setVx((float)(norm(vxI,vyI)*Math.cos(thetaI-theta)*Math.cos(theta)
-                            - norm(vxJ,vyJ)*Math.sin(thetaJ-theta)*Math.sin(theta)));
+                            - norm(vxJ,vyJ)*Math.sin(thetaJ-theta)*Math.sin(theta))*ballConflictChangeRatio);
                     ballJ.setVy((float)(norm(vxI,vyI)*Math.cos(thetaI-theta)*Math.sin(theta)
-                            + norm(vxJ,vyJ)*Math.sin(thetaJ-theta)*Math.cos(theta)));
+                            + norm(vxJ,vyJ)*Math.sin(thetaJ-theta)*Math.cos(theta))*ballConflictChangeRatio);
 
                 }
             }
@@ -205,20 +213,27 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
     }
 
 
-
+    // check conflict between two balls
     private boolean checkConflict(int i, int j) {
         Ball iBall, jBall;
         iBall = balls.get(i);
         jBall = balls.get(j);
-        return (norm(iBall.getX()-jBall.getX(), iBall.getY()-jBall.getY()) < iBall.getR()+jBall.getR());
+        float xi = iBall.getX(), yi = iBall.getY(), xj = jBall.getX(), yj = jBall.getY();
+        xi += iBall.getVx()*dt;
+        yi += iBall.getVy()*dt;
+        xj += jBall.getVx()*dt;
+        yj += jBall.getVy()*dt;
+
+        return (norm(xi-xj, yi-yj) < iBall.getR() + jBall.getR());
     }
 
-
+    // calculate l2-norm
     private float norm (float a, float b) {
         return (float)Math.sqrt((double)(a*a + b*b));
     }
 
-    private boolean checkAllStop() {
+    // check if all balls stop
+    public boolean checkAllStop() {
         for (int i=0; i<balls.size(); i++) {
             if (norm (balls.get(i).getVx(), balls.get(i).getVy()) > 1.0F) {
                 return false;
@@ -227,7 +242,7 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
         return true;
     }
 
-
+    // use touch event for cue angle adjusting
     private float prevY;
     @Override
     public boolean onTouch(View v, MotionEvent event) {
@@ -251,18 +266,23 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
         return true;
     }
 
-
+    // update thread to make balls move
     class UpdateThread extends Thread {
         public void run() {
             int cnt = 0;
+            while(!isStart){};
             while(isStart) {
+
                 try {
                     Thread.sleep((long)(1000*dt));
                     move();
 
-                    if ((cnt%10000 == 0 && checkAllStop()) || cnt > 50000) {
+                    if (checkAllStop() || cnt*dt > 50) {
                         isStart = false;
-                        postInvalidate();;
+                        cnt = 0;
+                        Thread.sleep(1000);
+                        postInvalidate();
+                        while(!isStart){}
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
