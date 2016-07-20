@@ -1,7 +1,6 @@
 package com.android.yeongjinoh.showmetheway;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -36,16 +35,16 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
     private final float ballConflictChangeRatio = 0.95F;
 
     // the other global variables
-    private double angle = -Math.PI/4;
-    private float score;
+    private double angle = Math.PI/4;
+    private int score;
     public boolean isStart = false;
     private Bitmap table;
-    private SharedPreferences.Editor scoreEditor;
 
     // flags to calculate score;
     private boolean hitRed1, hitRed2, hitYellow;
     private int life;
     private int stage;
+    private ScoreUpdateListener scoreUpdateListener;
 
     public BillardTableView(Context context, AttributeSet attrs) {
 
@@ -87,15 +86,15 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
         AddBall(red);
         AddBall(yellow);
 
-        score = 0.0F;
+        score = 0;
         life = 3;
         stage = 1;
 
-        SharedPreferences scorePrefs = getContext().getSharedPreferences("score",Context.MODE_PRIVATE);
-        scoreEditor = scorePrefs.edit();
-        scoreEditor.putFloat("score",score);
-        scoreEditor.commit();
         new UpdateThread().start();
+    }
+
+    public void setScoreUpdateListener(ScoreUpdateListener listener) {
+        scoreUpdateListener = listener;
     }
 
     public void reset() {
@@ -115,7 +114,7 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
         AddBall(red);
         AddBall(yellow);
 
-        score = 0.0F;
+        score = 0;
         life = 3;
         stage = 1;
     }
@@ -325,13 +324,9 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
         if (hitYellow || !(hitRed1 || hitRed2)) {
             life--;
         } else if (hitRed1 && hitRed2) {
-            score += (float)(10 * Math.pow(2,stage));
+            score += (10 * (int)Math.pow(2,stage-1));
+            scoreUpdateListener.onScoreUpdate(score);
         }
-
-        // share score
-        scoreEditor.putFloat("score",score);
-        scoreEditor.commit();
-
         stage++;
 
         if (life == 0) {

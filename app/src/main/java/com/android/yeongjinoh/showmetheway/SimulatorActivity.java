@@ -1,28 +1,19 @@
 package com.android.yeongjinoh.showmetheway;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.BitmapDrawable;
-import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Created by yeongjinoh on 2016-07-18.
  */
-public class SimulatorActivity extends Activity {
+public class SimulatorActivity extends Activity implements ScoreUpdateListener {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +27,9 @@ public class SimulatorActivity extends Activity {
         imageView.setImageDrawable(background);
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
 
-        final BillardTableView billardTableView = (BillardTableView) findViewById(R.id.billiardTableView);
+        // set score update listener
+        final BillardTableView billiardTableView = (BillardTableView) findViewById(R.id.billiardTableView);
+        billiardTableView.setScoreUpdateListener(this);
 
         // set menu button
         Button buttonSimulMenu = (Button) findViewById(R.id.btnSimulMenu);
@@ -52,19 +45,25 @@ public class SimulatorActivity extends Activity {
         buttonSimulHit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updateScore();
-                billardTableView.hit();
+                billiardTableView.hit();
             }
         });
     }
 
-    public void updateScore () {
-        SharedPreferences scorePrefs = getSharedPreferences("score", MODE_PRIVATE);
-        if (scorePrefs != null && scorePrefs.contains("score")) {
-            TextView textView = (TextView) findViewById(R.id.scoreText);
-            float score = scorePrefs.getFloat("score",-1);
-            textView.setText("SCORE : "+Float.toString(score));
-        }
+    @Override
+    public void onScoreUpdate(int score) {
+        TextView textView = (TextView) findViewById(R.id.scoreText);
+        String value = "SCORE : " + Float.toString(score);
+        setText(textView, value);
+    }
+
+    private void setText(final TextView text,final String value){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                text.setText(value);
+            }
+        });
     }
 
 }
