@@ -3,7 +3,9 @@ package com.android.yeongjinoh.showmetheway;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.BitmapDrawable;
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.view.View;
@@ -26,6 +28,13 @@ public class SimulatorActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simulation);
+
+        // set background image
+        Resources resources = getResources();
+        BitmapDrawable background = (BitmapDrawable) resources.getDrawable(R.drawable.tile);
+        ImageView imageView = (ImageView) findViewById(R.id.imgSimulBackground);
+        imageView.setImageDrawable(background);
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
 
         final BillardTableView billardTableView = (BillardTableView) findViewById(R.id.billiardTableView);
 

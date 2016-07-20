@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#377a9f">
+    >
+    <ImageView
+        android:id="@+id/imgSimulBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+    />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
 
     <LinearLayout
         android:orientation="vertical"
@@ -23,7 +33,7 @@
                 android:layout_margin="10dp"
                 android:text="Menu"
                 android:textSize="15dp"
-                android:background="@drawable/button_selector"
+                android:background="@drawable/button_selector2"
                 />
             <FrameLayout
                 android:layout_width="match_parent"
@@ -102,7 +112,7 @@
                 android:layout_gravity="bottom"
                 android:layout_margin="10dp"
                 android:layout_below="@+id/powerGaugeBar"
-                android:background="@drawable/button_selector"
+                android:background="@drawable/button_selector2"
                 />
 
         </RelativeLayout>
@@ -116,5 +126,5 @@
         android:id="@+id/textView"
         android:layout_weight="1" />
 
-
-</LinearLayout>
+    </LinearLayout>
+</FrameLayout>

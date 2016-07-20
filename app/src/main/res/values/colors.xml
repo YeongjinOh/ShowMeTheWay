@@ -5,4 +5,6 @@
     <color name="colorAccent">#FF4081</color>
     <color name="pressed1">#FFFFFFFF</color>
     <color name="nonPressed1">#88FFFFFF</color>
+    <color name="pressed2">#FFAAAAFF</color>
+    <color name="nonPressed2">#88AAAAFF</color>
 </resources>
