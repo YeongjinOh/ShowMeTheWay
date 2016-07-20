@@ -54,7 +54,7 @@
 
             </FrameLayout>
         </LinearLayout>
-        <LinearLayout
+         <FrameLayout
             android:id="@+id/tableView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -68,8 +68,35 @@
                 android:layout_margin="20dp"
                 android:src="@drawable/billiard_table"
                 />
+             <RelativeLayout
+                 android:layout_width="match_parent"
+                 android:layout_height="20dp"
+                 android:paddingRight="60dp"
+                 >
+                 <ImageView
+                     android:id="@+id/imgSimulLife1"
+                     android:layout_width="15dp"
+                     android:layout_height="15dp"
+                     android:layout_alignParentRight="true"
+                     android:paddingRight="3dp"
+                     android:src="@drawable/red_ball"/>
+                 <ImageView
+                     android:id="@+id/imgSimulLife2"
+                     android:layout_width="15dp"
+                     android:layout_height="15dp"
+                     android:paddingRight="3dp"
+                     android:layout_toLeftOf="@+id/imgSimulLife1"
+                     android:src="@drawable/red_ball"/>
+                 <ImageView
+                     android:id="@+id/imgSimulLife3"
+                     android:layout_width="15dp"
+                     android:layout_height="15dp"
+                     android:paddingRight="3dp"
+                     android:layout_toLeftOf="@+id/imgSimulLife2"
+                     android:src="@drawable/red_ball"/>
+             </RelativeLayout>
 
-        </LinearLayout>
+        </FrameLayout>
 
     </LinearLayout>
     <LinearLayout

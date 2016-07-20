@@ -12,7 +12,7 @@ import android.widget.TextView;
 /**
  * Created by yeongjinoh on 2016-07-18.
  */
-public class SimulatorActivity extends Activity implements ScoreUpdateListener {
+public class SimulatorActivity extends Activity implements UpdateListener {
 
 
     @Override
@@ -29,7 +29,7 @@ public class SimulatorActivity extends Activity implements ScoreUpdateListener {
 
         // set score update listener
         final BillardTableView billiardTableView = (BillardTableView) findViewById(R.id.billiardTableView);
-        billiardTableView.setScoreUpdateListener(this);
+        billiardTableView.setUpdateListener(this);
 
         // set menu button
         Button buttonSimulMenu = (Button) findViewById(R.id.btnSimulMenu);
@@ -55,6 +55,47 @@ public class SimulatorActivity extends Activity implements ScoreUpdateListener {
         TextView textView = (TextView) findViewById(R.id.scoreText);
         String value = "SCORE : " + Float.toString(score);
         setText(textView, value);
+    }
+
+    @Override
+    public void onLifeUpdate(final int life) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+        ImageView life1, life2, life3;
+        Resources resources = getResources();
+	    BitmapDrawable red, yellow;
+	    red = (BitmapDrawable) resources.getDrawable(R.drawable.red_ball);
+	    yellow = (BitmapDrawable) resources.getDrawable(R.drawable.yellow_ball);
+
+        switch (life) {
+            case 0:
+                life3 = (ImageView) findViewById(R.id.imgSimulLife3);
+		        life3.setImageDrawable(yellow);
+                break;
+            case 1:
+                life2 = (ImageView) findViewById(R.id.imgSimulLife2);
+		        life2.setImageDrawable(yellow);
+                break;
+            case 2:
+                life1 = (ImageView) findViewById(R.id.imgSimulLife1);
+		        life1.setImageDrawable(yellow);
+                break;
+            case 3:
+		        life1 = (ImageView) findViewById(R.id.imgSimulLife1);
+		        life2 = (ImageView) findViewById(R.id.imgSimulLife2);
+		        life3 = (ImageView) findViewById(R.id.imgSimulLife3);
+		        life1.setImageDrawable(red);
+		        life2.setImageDrawable(red);
+		        life3.setImageDrawable(red);
+                break;
+            default:
+                break;
+        }
+        }
+            });
+
     }
 
     private void setText(final TextView text,final String value){

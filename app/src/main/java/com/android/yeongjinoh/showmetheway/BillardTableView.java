@@ -30,9 +30,9 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
     // constants for physical system
     private final float dt = 0.01F;
     private final float maximumPower = 4000.0F;
-    private final float surfaceFrictionalRatio = 0.11F;
+    private final float surfaceFrictionalRatio = 0.15F;
     private final float cushionConflictChangeRatio = 0.9F;
-    private final float ballConflictChangeRatio = 0.95F;
+    private final float ballConflictChangeRatio = 0.93F;
 
     // the other global variables
     private double angle = Math.PI/4;
@@ -44,7 +44,7 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
     private boolean hitRed1, hitRed2, hitYellow;
     private int life;
     private int stage;
-    private ScoreUpdateListener scoreUpdateListener;
+    private UpdateListener UpdateListener;
 
     public BillardTableView(Context context, AttributeSet attrs) {
 
@@ -93,8 +93,8 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
         new UpdateThread().start();
     }
 
-    public void setScoreUpdateListener(ScoreUpdateListener listener) {
-        scoreUpdateListener = listener;
+    public void setUpdateListener(UpdateListener listener) {
+        UpdateListener = listener;
     }
 
     public void reset() {
@@ -117,6 +117,8 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
         score = 0;
         life = 3;
         stage = 1;
+        UpdateListener.onLifeUpdate(life);
+        UpdateListener.onScoreUpdate(score);
     }
 
     public void hit() {
@@ -323,9 +325,10 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
     private void updateScore() {
         if (hitYellow || !(hitRed1 || hitRed2)) {
             life--;
+            UpdateListener.onLifeUpdate(life);
         } else if (hitRed1 && hitRed2) {
             score += (10 * (int)Math.pow(2,stage-1));
-            scoreUpdateListener.onScoreUpdate(score);
+            UpdateListener.onScoreUpdate(score);
         }
         stage++;
 
