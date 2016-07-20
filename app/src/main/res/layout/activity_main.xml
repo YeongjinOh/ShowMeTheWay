@@ -36,9 +36,29 @@
                 android:id="@+id/btnMainStart"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="20dp"
+                android:layout_margin="10dp"
                 android:background="@drawable/button_selector"
-                android:text="Start"
+                android:text="시작하기"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                />
+            <Button
+                android:id="@+id/btnMainRank"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/button_selector"
+                android:text="순위"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                />
+            <Button
+                android:id="@+id/btnMainRule"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/button_selector"
+                android:text="게임 설명"
                 android:textSize="20dp"
                 android:textStyle="bold"
                 />
@@ -46,9 +66,9 @@
                 android:id="@+id/btnMainEnd"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="20dp"
+                android:layout_margin="10dp"
                 android:background="@drawable/button_selector"
-                android:text="Exit"
+                android:text="종료"
                 android:textSize="20dp"
                 android:textStyle="bold"
                 />

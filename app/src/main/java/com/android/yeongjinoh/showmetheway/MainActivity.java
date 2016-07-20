@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
         // initailize main buttons
         Button buttonMainStart = (Button) findViewById(R.id.btnMainStart);
+        Button buttonMainRank = (Button) findViewById(R.id.btnMainRank);
         Button buttonMainEnd = (Button) findViewById(R.id.btnMainEnd);
 
 
@@ -30,6 +31,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), SimulatorActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        buttonMainRank.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), ScoreHistoryActivity.class);
                 startActivity(intent);
             }
         });
