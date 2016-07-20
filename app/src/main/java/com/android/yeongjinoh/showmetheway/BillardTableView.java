@@ -348,11 +348,7 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
 
             case MotionEvent.ACTION_MOVE:
                 float rawY = event.getRawY();
-                if (prevY > rawY) {
-                    angle += (float) Math.PI/120;
-                } else {
-                    angle -= (float) Math.PI/120;
-                }
+                angle += (float) Math.PI*(prevY-rawY)/1500.0F;
                 prevY = rawY;
                 postInvalidate();
 
