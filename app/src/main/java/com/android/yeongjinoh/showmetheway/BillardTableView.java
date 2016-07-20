@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
@@ -32,15 +33,21 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
     // constants for physical system
     private final float dt = 0.01F;
     private final float maximumPower = 4000.0F;
-    private final float surfaceFrictionalRatio = 0.1F;
-    private final float cushionConflictChangeRatio = 0.95F;
+    private final float surfaceFrictionalRatio = 0.11F;
+    private final float cushionConflictChangeRatio = 0.9F;
     private final float ballConflictChangeRatio = 0.95F;
 
     // the other global variables
     private double angle = -Math.PI/4;
-    private float score = 0.0F;
+    private float score;
     public boolean isStart = false;
     private Bitmap table;
+    private SharedPreferences.Editor scoreEditor;
+
+    // flags to calculate score;
+    private boolean hitRed1, hitRed2, hitYellow;
+    private int life;
+    private int stage;
 
     public BillardTableView(Context context, AttributeSet attrs) {
 
@@ -78,15 +85,29 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
         // initialize balls
         balls = new ArrayList<Ball>();
         AddBall(white);
+        AddBall(red);
+        AddBall(red);
         AddBall(yellow);
-        AddBall(red);
-        AddBall(red);
-        
+
+        score = 0.0F;
+        life = 3;
+        stage = 1;
+
+        SharedPreferences scorePrefs = getContext().getSharedPreferences("score",Context.MODE_PRIVATE);
+        scoreEditor = scorePrefs.edit();
+        scoreEditor.putFloat("score",score);
+        scoreEditor.commit();
         new UpdateThread().start();
     }
 
     public void hit() {
         if (!isStart) {
+
+            // reset flags
+            hitRed1 = false;
+            hitRed2 = false;
+            hitYellow = false;
+
             Ball white = balls.get(0);
             white.setVx(-maximumPower*(float)Math.cos(angle));
             white.setVy(-maximumPower*(float)Math.sin(angle));
@@ -95,14 +116,18 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
     }
 
     private void drawCue (Canvas canvas) {
+        // get white ball information
+        Ball white = balls.get(0);
+        float x = white.getX(), y = white.getY();
+
+        // draw cue
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
         paint.setARGB(200,188,143,143);
         paint.setStrokeWidth(20*scaleFactor);
-        Ball white = balls.get(0);
-        float x = white.getX(), y = white.getY();
         canvas.drawLine((float)(x+Math.cos(angle)*radius*1.2+margin)*scaleFactor,(float)(y+Math.sin(angle)*radius*1.2+margin)*scaleFactor,
                 (float)(x+Math.cos(angle)*radius*17.2+margin)*scaleFactor,(float)(y+Math.sin(angle)*radius*17.2+margin)*scaleFactor,paint);
+
     }
 
     protected void onDraw(Canvas canvas) {
@@ -189,19 +214,16 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
                     float xI = ballI.getX(), yI = ballI.getY(), xJ = ballJ.getX(), yJ = ballJ.getY();
                     float vxI = ballI.getVx(), vyI = ballI.getVy(), vxJ = ballJ.getVx(), vyJ = ballJ.getVy();
 
-                    if (j==0) {
-                        // update score
-                        if (ballI.getPaint().getColor() == Color.RED) {
-                            score += 10;
-                        } else if (ballI.getPaint().getColor() == Color.YELLOW) {
-                            score -= 10;
-                        }
+                    if (j == 0) {
 
-                        // share score
-                        SharedPreferences scorePrefs = getContext().getSharedPreferences("score",Context.MODE_PRIVATE);
-                        SharedPreferences.Editor scoreEditor = scorePrefs.edit();
-                        scoreEditor.putFloat("score",score);
-                        scoreEditor.commit();
+                        // update flags
+                        if (i == 1) {
+                            hitRed1 = true;
+                        } else if (i == 2) {
+                            hitRed2 = true;
+                        } else {
+                            hitYellow = true;
+                        }
                     }
 
                     // get angles using arctan
@@ -265,6 +287,20 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
         return true;
     }
 
+    private void updateScore() {
+        if (hitYellow || !(hitRed1 || hitRed2)) {
+            life--;
+        } else if (hitRed1 && hitRed2) {
+            score += (float)(10 * Math.pow(2,stage));
+        }
+
+        // share score
+        scoreEditor.putFloat("score",score);
+        scoreEditor.commit();
+
+        stage++;
+    }
+
     // use touch event for cue angle adjusting
     private float prevY;
     @Override
@@ -302,6 +338,7 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
 
                     if (checkAllStop() || cnt*dt > 50) {
                         cnt = 0;
+                        updateScore();
                         Thread.sleep(300);
                         Paint yellow = new Paint();
                         yellow.setColor(Color.YELLOW);
