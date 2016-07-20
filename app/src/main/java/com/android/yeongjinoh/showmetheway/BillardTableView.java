@@ -6,9 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.DashPathEffect;
 import android.graphics.Paint;
-import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -128,6 +126,19 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
         canvas.drawLine((float)(x+Math.cos(angle)*radius*1.2+margin)*scaleFactor,(float)(y+Math.sin(angle)*radius*1.2+margin)*scaleFactor,
                 (float)(x+Math.cos(angle)*radius*17.2+margin)*scaleFactor,(float)(y+Math.sin(angle)*radius*17.2+margin)*scaleFactor,paint);
 
+        // draw ahead line
+        paint.setARGB(100,255,255,255);
+        paint.setStrokeWidth(5*scaleFactor);
+        float xStep = (float)Math.cos(angle)*radius, yStep = (float)Math.sin(angle)*radius;
+        for (int i=1; i<50; i++) {
+
+            // draw until conflict with other ball
+            if (i>3 && !checkNoConflictWithAnyBall(x-xStep*i,y-yStep*i) ) {
+                break;
+            }
+            canvas.drawCircle((x-xStep*i+margin)*scaleFactor,(y-yStep*i+margin)*scaleFactor, radius/5.0F*scaleFactor, paint);
+        }
+
     }
 
     protected void onDraw(Canvas canvas) {
@@ -147,8 +158,8 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
 
     private void AddBall (Paint paint) {
         float randomX, randomY;
-        randomX = radius + (float)Math.random()*(width-radius);
-        randomY = radius + (float)Math.random()*(height-radius);
+        randomX = radius + (float)Math.random()*(width-2*radius);
+        randomY = radius + (float)Math.random()*(height-2*radius);
         while (!checkNoConflictWithAnyBall(randomX, randomY)) {
             randomX = radius + (float)Math.random()*(width-radius);
             randomY = radius + (float)Math.random()*(height-radius);
