@@ -98,6 +98,28 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
         new UpdateThread().start();
     }
 
+    public void reset() {
+
+        // initialize paint
+        Paint white = new Paint();
+        white.setColor(Color.WHITE);
+        Paint yellow = new Paint();
+        yellow.setColor(Color.YELLOW);
+        Paint red = new Paint();
+        red.setColor(Color.RED);
+
+        // reset balls
+        balls.clear();
+        AddBall(white);
+        AddBall(red);
+        AddBall(red);
+        AddBall(yellow);
+
+        score = 0.0F;
+        life = 3;
+        stage = 1;
+    }
+
     public void hit() {
         if (!isStart) {
 
@@ -298,6 +320,7 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
         return true;
     }
 
+    // this method is called at the last time.
     private void updateScore() {
         if (hitYellow || !(hitRed1 || hitRed2)) {
             life--;
@@ -310,6 +333,10 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
         scoreEditor.commit();
 
         stage++;
+
+        if (life == 0) {
+            reset();
+        }
     }
 
     // use touch event for cue angle adjusting
@@ -349,12 +376,12 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
 
                     if (checkAllStop() || cnt*dt > 50) {
                         cnt = 0;
-                        updateScore();
                         Thread.sleep(300);
                         Paint yellow = new Paint();
                         yellow.setColor(Color.YELLOW);
                         AddBall(yellow);
                         isStart = false;
+                        updateScore();
                         postInvalidate();
                         while(!isStart){}
                     }
