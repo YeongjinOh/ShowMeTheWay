@@ -12,10 +12,28 @@ import android.widget.EditText;
  */
 public class AccountSetActivity extends Activity {
 
+    public SharedPreferences pref;
+    public String username;
+    public String emailaddress;
+    public final String USER_NAME = "username";
+    public final String EMAIL_ADDRESS = "emailaddress";
+    public EditText textUsername;
+    public EditText textEmailaddress;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_accountset);
+
+        // show stored strings in EditText
+        pref = getSharedPreferences("pref", MODE_PRIVATE);
+        username = pref.getString(USER_NAME,"");
+        emailaddress = pref.getString(EMAIL_ADDRESS,"");
+        textUsername = (EditText) findViewById(R.id.usernameEntry);
+        textEmailaddress = (EditText) findViewById(R.id.emailaddressEntry);
+        textUsername.setText(username);
+        textEmailaddress.setText(emailaddress);
+
         Button buttonSave = (Button) findViewById(R.id.btnSave);
         Button buttonCancel = (Button) findViewById(R.id.btnCancel);
         buttonSave.setOnClickListener(new View.OnClickListener() {
@@ -23,17 +41,16 @@ public class AccountSetActivity extends Activity {
             public void onClick(View view) {
 
                 // get user inputs from EditText objects
-                EditText textUsername = (EditText) findViewById(R.id.usernameEntry);
-                EditText textEmailaddress = (EditText) findViewById(R.id.emailaddressEntry);
-                String username = textUsername.getText().toString();
-                String emailaddress = textEmailaddress.getText().toString();
+                username = textUsername.getText().toString();
+                emailaddress = textEmailaddress.getText().toString();
 
                 // save them into SharedPreferences
-                SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
                 SharedPreferences.Editor editor = pref.edit();
-                editor.putString("username", username);
-                editor.putString("emailaddress",emailaddress);
+                editor.putString(USER_NAME, username);
+                editor.putString(EMAIL_ADDRESS,emailaddress);
                 editor.commit();
+
+                finish();
             }
         });
         buttonCancel.setOnClickListener(new View.OnClickListener() {

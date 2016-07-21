@@ -1,6 +1,7 @@
 package com.android.yeongjinoh.showmetheway;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,8 +34,17 @@ public class MainActivity extends AppCompatActivity {
         buttonMainStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), SimulatorActivity.class);
-                startActivity(intent);
+                SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+                String username = pref.getString("username", "");
+                String emailaddress = pref.getString("emailaddress", "");
+                if (username.equals("") || emailaddress.equals("")) {
+                    Intent intent = new Intent(getApplicationContext(), AccountSetActivity.class);
+                    startActivity(intent);
+                    Toast.makeText(getApplicationContext(),"사용자 정보를 입력해주세요.",Toast.LENGTH_LONG).show();
+                } else {
+                    Intent intent = new Intent(getApplicationContext(), SimulatorActivity.class);
+                    startActivity(intent);
+                }
             }
         });
 
