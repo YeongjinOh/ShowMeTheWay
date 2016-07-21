@@ -24,9 +24,12 @@
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:background="#33ffffff"
-            android:layout_margin="20dp"
+            android:layout_height="90dp"
+            android:background="#55ddddff"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:padding="5dp"
             android:src="@drawable/title"/>
         <LinearLayout
             android:layout_width="match_parent"

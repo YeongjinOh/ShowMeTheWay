@@ -31,7 +31,7 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
 
     // constants for physical system
     private final float dt = 0.01F;
-    private final float maximumPower = 400.0F;
+    private final float maximumPower = 3000.0F;
     private final float surfaceFrictionalRatio = 0.15F;
     private final float cushionConflictChangeRatio = 0.9F;
     private final float ballConflictChangeRatio = 0.85F;
@@ -41,6 +41,7 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
     private int score;
     public boolean isStart = false;
     private Bitmap table;
+    private final int DEFAULT_LIFE = 1;
 
     // flags to calculate score;
     private boolean hitRed1, hitRed2, hitYellow;
@@ -89,7 +90,7 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
         AddBall(yellow);
 
         score = 0;
-        life = 1;
+        life = DEFAULT_LIFE;
         stage = 1;
 
         new UpdateThread().start();
@@ -117,7 +118,7 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
         AddBall(yellow);
 
         score = 0;
-        life = 3;
+        life = DEFAULT_LIFE;
         stage = 1;
         UpdateListener.onLifeUpdate(life,score);
         UpdateListener.onScoreUpdate(score);
@@ -350,7 +351,7 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
 
             case MotionEvent.ACTION_MOVE:
                 float rawY = event.getRawY();
-                angle += (float) Math.PI*(prevY-rawY)/1500.0F;
+                angle += (float) Math.PI*(prevY-rawY)/3000.0F;
                 prevY = rawY;
                 postInvalidate();
 
