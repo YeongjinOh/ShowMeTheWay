@@ -9,13 +9,31 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/DGPS_App" />
+            <option value="$PROJECT_DIR$/DGPS_ContentsHub" />
+            <option value="$PROJECT_DIR$/DGPS_Test" />
+            <option value="$PROJECT_DIR$/android-support-v7-appcompat" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/google-play-services_lib" />
+            <option value="$PROJECT_DIR$/libraries" />
+            <option value="$PROJECT_DIR$/libraries/facebook" />
+            <option value="$PROJECT_DIR$/testVolley" />
+            <option value="$PROJECT_DIR$/testapp" />
           </set>
         </option>
         <option name="myModules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/DGPS_App" />
+            <option value="$PROJECT_DIR$/DGPS_ContentsHub" />
+            <option value="$PROJECT_DIR$/DGPS_Test" />
+            <option value="$PROJECT_DIR$/android-support-v7-appcompat" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/google-play-services_lib" />
+            <option value="$PROJECT_DIR$/libraries" />
+            <option value="$PROJECT_DIR$/libraries/facebook" />
+            <option value="$PROJECT_DIR$/testVolley" />
+            <option value="$PROJECT_DIR$/testapp" />
           </set>
         </option>
       </GradleProjectSettings>

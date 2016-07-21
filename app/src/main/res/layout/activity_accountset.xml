@@ -28,11 +28,14 @@
         android:layout_centerInParent="true"
         android:padding="10dp"
         android:background="#aaffffff"
-        >
+        android:id="@+id/relativeLayout">
+
+
         <TextView
             android:id="@+id/usernameLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/btnFacebookLogin"
             android:paddingTop="4dp"
             android:text="User name : "
             android:textColor="#ff222222"
@@ -91,5 +94,6 @@
             android:drawablePadding="2dp"
             />
     </RelativeLayout>
+
 
 </RelativeLayout>

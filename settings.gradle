@@ -1,1 +1,8 @@
 include ':app'
+include ':android-support-v7-appcompat', ':DGPS_ContentsHub', ':testapp'
+include ':DGPS_Test'
+include ':google-play-services_lib'
+include ':DGPS_App'
+
+include ':testVolley'
+include ':libraries:facebook'
