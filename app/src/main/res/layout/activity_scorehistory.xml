@@ -1,45 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/main"
+        android:scaleType="fitXY"
+        />
+
+    <LinearLayout
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ddaaaaff">
+    >
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="7"
+            android:padding="10dp"
+            >
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="11"
-        >
-        <Button
-            android:id="@+id/btnScoreMenu"
-            android:layout_width="60dp"
-            android:layout_height="30dp"
-            android:layout_margin="10dp"
-            android:layout_alignParentLeft="true"
-            android:text="Menu"
-            android:textSize="15dp"
-            android:background="@drawable/button_selector"
-            />
-        <Button
-            android:id="@+id/btnScoreRank"
-            android:layout_width="60dp"
-            android:layout_height="30dp"
-            android:layout_margin="10dp"
-            android:layout_alignParentRight="true"
-            android:text="Rank"
-            android:textSize="15dp"
-            android:background="@drawable/button_selector"
-            />
-    </RelativeLayout>
+                           <Button
+                               android:id="@+id/btnScoreMenu"
+                               android:layout_width="60dp"
+                               android:layout_height="30dp"
+                               android:layout_margin="10dp"
+                               android:layout_alignParentLeft="true"
+                               android:text="Menu"
+                               android:textSize="15dp"
+                               android:background="@drawable/button_selector"
+                               />
+                <Button
+                    android:id="@+id/btnScoreRank"
+                    android:layout_width="60dp"
+                    android:layout_height="30dp"
+                    android:layout_margin="10dp"
+                    android:layout_alignParentRight="true"
+                    android:text="Rank"
+                    android:textSize="15dp"
+                    android:background="@drawable/button_selector"
+                    />
+            </RelativeLayout>
+        </LinearLayout>
 
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="20dp">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:background="#aa8888ff"
+                >
+                <TextView
+                    android:layout_width="70dp"
+                    android:layout_height="match_parent"
+                    android:text="Rank"
+                    android:textSize="25dp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    />
+                <TextView
+                    android:layout_width="120dp"
+                    android:layout_height="match_parent"
+                    android:text="Date"
+                    android:textSize="25dp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    />
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:text="Score"
+                    android:textSize="25dp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    />
+            </LinearLayout>
+            <ListView
+                android:id="@+id/listViewScore"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#aaffffff"
+            >
+            </ListView>
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        />
-
-</LinearLayout>
