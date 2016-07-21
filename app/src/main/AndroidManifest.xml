@@ -16,10 +16,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SimulatorActivity"
-            ></activity>
-        <activity android:name=".ScoreHistoryActivity"
-            ></activity>
+        <activity android:name=".SimulatorActivity"></activity>
+        <activity android:name=".ScoreHistoryActivity"></activity>
+        <activity android:name=".GameOverActivity"
+            android:theme="@style/Theme.AppCompat.Light.Dialog"></activity>
     </application>
 
 </manifest>

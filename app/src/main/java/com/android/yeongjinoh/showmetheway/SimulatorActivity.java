@@ -1,9 +1,12 @@
 package com.android.yeongjinoh.showmetheway;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -15,10 +18,19 @@ import android.widget.TextView;
 public class SimulatorActivity extends Activity implements UpdateListener {
 
 
+    // database to save score
+    private DatabaseHelper dbHelper;
+    private SQLiteDatabase db;
+    private static String TABLE_NAME = "score";
+    boolean isOpen;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simulation);
+
+        // open database to save score
+        isOpen = openDatabase();
 
         // set background image
         Resources resources = getResources();
@@ -51,14 +63,27 @@ public class SimulatorActivity extends Activity implements UpdateListener {
     }
 
     @Override
-    public void onScoreUpdate(int score) {
-        TextView textView = (TextView) findViewById(R.id.scoreText);
-        String value = "SCORE : " + Float.toString(score);
-        setText(textView, value);
+    protected void onDestroy() {
+        super.onDestroy();
+        dbHelper.close();
     }
 
     @Override
-    public void onLifeUpdate(final int life) {
+    public void onScoreUpdate(int score) {
+        TextView textView = (TextView) findViewById(R.id.scoreText);
+        String value = "SCORE : " + Integer.toString(score);
+        setText(textView, value);
+    }
+
+    public void notifyGaveover (int score) {
+        insertScore(db,"today", Integer.toString(score));
+        Intent intent = new Intent(getApplicationContext(), GameOverActivity.class);
+        intent.putExtra("score",score);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onLifeUpdate(final int life, final int score) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -73,6 +98,7 @@ public class SimulatorActivity extends Activity implements UpdateListener {
             case 0:
                 life3 = (ImageView) findViewById(R.id.imgSimulLife3);
 		        life3.setImageDrawable(yellow);
+                notifyGaveover(score);
                 break;
             case 1:
                 life2 = (ImageView) findViewById(R.id.imgSimulLife2);
@@ -96,6 +122,24 @@ public class SimulatorActivity extends Activity implements UpdateListener {
         }
             });
 
+    }
+
+    private boolean openDatabase() {
+        dbHelper = new DatabaseHelper(this);
+        db = dbHelper.getWritableDatabase();
+        return true;
+    }
+
+
+    public void insertScore(SQLiteDatabase db, String date, String score) {
+        if (isOpen) {
+            dbHelper.println("inserting records.");
+            try {
+                db.execSQL("insert into " + TABLE_NAME + "(date, score) values (" + date + ", " + score + ");");
+            } catch (Exception ex) {
+                Log.e("SimulatorActivity", "Exception in insert SQL", ex);
+            }
+        }
     }
 
     private void setText(final TextView text,final String value){

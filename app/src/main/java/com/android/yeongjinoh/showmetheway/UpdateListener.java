@@ -5,5 +5,5 @@ package com.android.yeongjinoh.showmetheway;
  */
 public interface UpdateListener  {
     void onScoreUpdate(int score);
-    void onLifeUpdate(int life);
+    void onLifeUpdate(int life, int score);
 }

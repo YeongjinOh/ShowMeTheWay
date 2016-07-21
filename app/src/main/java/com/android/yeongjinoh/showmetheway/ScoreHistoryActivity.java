@@ -17,7 +17,6 @@ public class ScoreHistoryActivity extends Activity {
 
     private DatabaseHelper dbHelper;
     private SQLiteDatabase db;
-    private static String DATABASE_NAME = "scoreDB";
     private static String TABLE_NAME = "score";
 
     @Override
@@ -48,12 +47,15 @@ public class ScoreHistoryActivity extends Activity {
         });
     }
 
-    private boolean openDatabase() {
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dbHelper.close();
+    }
 
+    private boolean openDatabase() {
         dbHelper = new DatabaseHelper(this);
         db = dbHelper.getWritableDatabase();
-        dbHelper.println("opening database [" + DATABASE_NAME + "].");
-
         return true;
     }
 

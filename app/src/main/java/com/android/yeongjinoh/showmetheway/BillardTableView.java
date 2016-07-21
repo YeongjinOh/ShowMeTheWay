@@ -1,6 +1,7 @@
 package com.android.yeongjinoh.showmetheway;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -117,7 +118,7 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
         score = 0;
         life = 3;
         stage = 1;
-        UpdateListener.onLifeUpdate(life);
+        UpdateListener.onLifeUpdate(life,score);
         UpdateListener.onScoreUpdate(score);
     }
 
@@ -325,7 +326,7 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
     private void updateScore() {
         if (hitYellow || !(hitRed1 || hitRed2)) {
             life--;
-            UpdateListener.onLifeUpdate(life);
+            UpdateListener.onLifeUpdate(life,score);
         } else if (hitRed1 && hitRed2) {
             score += (10 * (int)Math.pow(2,stage-1));
             UpdateListener.onScoreUpdate(score);

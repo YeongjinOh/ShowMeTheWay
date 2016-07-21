@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.widget.TextView;
 
 /**
  * Created by yeongjinoh on 2016-07-21.
@@ -21,7 +20,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void onCreate(SQLiteDatabase db) {
-        println("creating table [" + TABLE_NAME + "].");
+        println("creating or opening table [" + TABLE_NAME + "].");
 
         try {
             String DROP_SQL = "drop table if exists " + TABLE_NAME;
@@ -34,54 +33,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + " _id integer PRIMARY KEY autoincrement, "
                 + " date text, "
                 + " score integer)";
-
         try {
             db.execSQL(CREATE_SQL);
         } catch(Exception ex) {
             Log.e(TAG, "Exception in CREATE_SQL", ex);
         }
 
-        println("inserting records.");
-
+        // insert sample dats
         try {
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-21', 200);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-10', 150);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-17', 20);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-21', 200);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-10', 150);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-17', 20);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-21', 200);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-10', 150);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-17', 20);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-21', 200);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-10', 150);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-17', 20);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-21', 200);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-10', 150);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-17', 20);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-21', 200);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-10', 150);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-17', 20);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-707-21', 200);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-10', 150);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-17', 20);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-21', 200);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-10', 150);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-17', 20);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-21', 2070);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-10', 170);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-17', 20);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-21', 200);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-10', 1570);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-17', 20);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-21', 200);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-10', 1570);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-17', 270);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-721', 200);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-077-10', 1750);" );
-            db.execSQL( "insert into " + TABLE_NAME + "(date, score) values ('16-07-17', 20);" );
-        } catch(Exception ex) {
-            Log.e(TAG, "Exception in insert SQL", ex);
+            db.execSQL("insert into " + TABLE_NAME + "(date, score) values ('sample data1', 100);");
+            db.execSQL("insert into " + TABLE_NAME + "(date, score) values ('sample data2', 200);");
+            db.execSQL("insert into " + TABLE_NAME + "(date, score) values ('sample data3', 50);");
+        } catch (Exception ex) {
+            Log.e("SimulatorActivity", "Exception in insert SQL", ex);
         }
 
     }
@@ -97,6 +61,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
     }
+
 
     public void println(String msg) {
         Log.d(TAG, msg);

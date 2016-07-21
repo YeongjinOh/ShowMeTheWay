@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="400dp"
+    android:orientation="vertical"
+    android:background="#aaffffff">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Game Over"
+            android:textSize="50dp"
+            android:textStyle="bold"
+            android:gravity="center"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Your score is "
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:gravity="center"/>
+        <TextView
+            android:id="@+id/textGameoverScore"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text=" 100"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:textColor="#ffaa66ff"
+            android:gravity="center"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="170dp"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <Button
+            android:id="@+id/btnGameoverRetry"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="Retry"
+            android:textSize="20dp"
+            android:layout_margin="10dp"
+            />
+        <Button
+            android:id="@+id/btnGameoverExit"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="Exit"
+            android:textSize="20dp"
+            android:layout_margin="10dp"
+            />
+    </LinearLayout>
+</LinearLayout>
