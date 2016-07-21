@@ -24,6 +24,9 @@ public class SimulatorActivity extends Activity implements UpdateListener {
     private static String TABLE_NAME = "score";
     boolean isOpen;
 
+    // request code for gameover activity
+    public static final int REQUEST_CODE_GAMEOVER = 1001;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +82,22 @@ public class SimulatorActivity extends Activity implements UpdateListener {
         insertScore(db,"today", Integer.toString(score));
         Intent intent = new Intent(getApplicationContext(), GameOverActivity.class);
         intent.putExtra("score",score);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_GAMEOVER);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+
+        // for gameover activity
+        if (requestCode == REQUEST_CODE_GAMEOVER) {
+
+
+            if (resultCode == RESULT_OK) { // Retry button pressed
+
+            } else if (resultCode == RESULT_CANCELED) { // Exit button pressed
+                finish();
+            }
+        }
     }
 
     @Override
