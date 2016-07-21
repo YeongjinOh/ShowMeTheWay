@@ -55,12 +55,12 @@
                 android:textStyle="bold"
                 />
             <Button
-                android:id="@+id/btnMainAccount"
+                android:id="@+id/btnAboutGame"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:background="@drawable/button_selector"
-                android:text="계정 설정"
+                android:text="게임 설명"
                 android:textSize="20dp"
                 android:textStyle="bold"
                 />

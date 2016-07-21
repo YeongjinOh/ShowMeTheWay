@@ -55,8 +55,13 @@ public class AccountSetActivity extends Activity {
                 editor.putString(USER_NAME, username);
                 editor.putString(EMAIL_ADDRESS,emailaddress);
                 editor.commit();
-
-                finish();
+                if (username.equals("") || emailaddress.equals("")) {
+                    Toast.makeText(getApplicationContext(),"이름과 이메일 주소를 모두 입력해주세요.",Toast.LENGTH_LONG).show();
+                } else {
+                    finish();
+                    Intent intent = new Intent(getApplicationContext(), RankActivity.class);
+                    startActivity(intent);
+                }
             }
         });
         buttonCancel.setOnClickListener(new View.OnClickListener() {

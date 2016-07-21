@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         // initailize main buttons
         Button buttonMainStart = (Button) findViewById(R.id.btnMainStart);
         Button buttonMainRank = (Button) findViewById(R.id.btnMainRank);
-        Button buttonMainAccount = (Button) findViewById(R.id.btnMainAccount);
+        Button buttonMainAccount = (Button) findViewById(R.id.btnAboutGame);
         Button buttonMainEnd = (Button) findViewById(R.id.btnMainEnd);
 
 
@@ -46,17 +46,9 @@ public class MainActivity extends AppCompatActivity {
         buttonMainStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
-                String username = pref.getString("username", "");
-                String emailaddress = pref.getString("emailaddress", "");
-                if (username.equals("") || emailaddress.equals("")) {
-                    Intent intent = new Intent(getApplicationContext(), AccountSetActivity.class);
-                    startActivity(intent);
-                    Toast.makeText(getApplicationContext(),"사용자 정보를 입력해주세요.",Toast.LENGTH_LONG).show();
-                } else {
-                    Intent intent = new Intent(getApplicationContext(), SimulatorActivity.class);
-                    startActivity(intent);
-                }
+            Intent intent = new Intent(getApplicationContext(), SimulatorActivity.class);
+            startActivity(intent);
+
             }
         });
 
