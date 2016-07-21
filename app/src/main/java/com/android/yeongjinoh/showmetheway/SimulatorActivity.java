@@ -61,6 +61,7 @@ public class SimulatorActivity extends Activity implements UpdateListener {
             @Override
             public void onClick(View view) {
                 billiardTableView.hit();
+
             }
         });
     }

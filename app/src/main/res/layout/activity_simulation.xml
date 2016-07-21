@@ -118,31 +118,37 @@
                 android:src="@drawable/white_ball"
                 android:adjustViewBounds="true"/>
         </FrameLayout>
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-
-            <View
-                android:id="@+id/powerGaugeBar"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+            <LinearLayout
                 android:layout_width="30dp"
                 android:layout_height="350dp"
-                android:background="#88ffffff"
-                android:layout_centerInParent="true"
-            />
+                android:gravity="bottom"
+                android:background="#55ffff33"
+            >
+                <View
+                    android:id="@+id/powerGaugeBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="#ccff5533"
+                    />
+            </LinearLayout>
+
+
             <Button
                 android:id="@+id/btnSimulHit"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:text="Hit"
                 android:textSize="15dp"
-                android:layout_gravity="bottom"
                 android:layout_margin="10dp"
-                android:layout_below="@+id/powerGaugeBar"
                 android:background="@drawable/button_selector2"
                 />
 
-        </RelativeLayout>
+        </LinearLayout>
     </LinearLayout>
 
     <TextView
