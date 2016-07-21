@@ -373,7 +373,6 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
 
                     if (checkAllStop() || cnt*dt > 50) {
                         cnt = 0;
-                        Thread.sleep(300);
                         Paint yellow = new Paint();
                         yellow.setColor(Color.YELLOW);
                         AddBall(yellow);

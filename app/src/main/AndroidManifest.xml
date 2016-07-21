@@ -20,6 +20,7 @@
         <activity android:name=".ScoreHistoryActivity"></activity>
         <activity android:name=".GameOverActivity"
             android:theme="@style/Theme.AppCompat.Light.Dialog"></activity>
+        <activity android:name=".AccountSetActivity"></activity>
     </application>
 
 </manifest>

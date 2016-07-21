@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
         // initailize main buttons
         Button buttonMainStart = (Button) findViewById(R.id.btnMainStart);
         Button buttonMainRank = (Button) findViewById(R.id.btnMainRank);
+        Button buttonMainAccount = (Button) findViewById(R.id.btnMainAccount);
         Button buttonMainEnd = (Button) findViewById(R.id.btnMainEnd);
 
 
@@ -40,6 +41,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), ScoreHistoryActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        buttonMainAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), AccountSetActivity.class);
                 startActivity(intent);
             }
         });
