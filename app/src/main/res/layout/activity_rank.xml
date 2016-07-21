@@ -9,6 +9,10 @@
         android:src="@drawable/main"
         android:scaleType="fitXY"
         />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#aa000000"/>
 
     <LinearLayout
     android:orientation="vertical"
@@ -27,25 +31,15 @@
                 android:layout_height="match_parent">
 
                            <Button
-                               android:id="@+id/btnScoreMenu"
+                               android:id="@+id/btnRankBack"
                                android:layout_width="60dp"
                                android:layout_height="30dp"
                                android:layout_margin="10dp"
                                android:layout_alignParentLeft="true"
-                               android:text="Menu"
+                               android:text="Back"
                                android:textSize="15dp"
-                               android:background="@drawable/button_selector"
+                               android:background="@drawable/button_selector3"
                                />
-                <Button
-                    android:id="@+id/btnScoreRank"
-                    android:layout_width="60dp"
-                    android:layout_height="30dp"
-                    android:layout_margin="10dp"
-                    android:layout_alignParentRight="true"
-                    android:text="Rank"
-                    android:textSize="15dp"
-                    android:background="@drawable/button_selector"
-                    />
             </RelativeLayout>
         </LinearLayout>
 
@@ -60,7 +54,7 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
-                android:background="#aa8888ff"
+                android:background="#aa4444bb"
                 >
                 <TextView
                     android:layout_width="70dp"
@@ -68,14 +62,16 @@
                     android:text="Rank"
                     android:textSize="20dp"
                     android:textStyle="bold"
+                    android:textColor="#ffbbbbff"
                     android:gravity="center"
                     />
                 <TextView
                     android:layout_width="120dp"
                     android:layout_height="match_parent"
-                    android:text="Date"
+                    android:text="Name"
                     android:textSize="20dp"
                     android:textStyle="bold"
+                    android:textColor="#ffbbbbff"
                     android:gravity="center"
                     />
                 <TextView
@@ -84,14 +80,15 @@
                     android:text="Score"
                     android:textSize="20dp"
                     android:textStyle="bold"
+                    android:textColor="#ffbbbbff"
                     android:gravity="center"
                     />
             </LinearLayout>
             <ListView
-                android:id="@+id/listViewScore"
+                android:id="@+id/listViewRank"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#aaffffff"
+                android:background="#aa777799"
             >
             </ListView>
         </LinearLayout>

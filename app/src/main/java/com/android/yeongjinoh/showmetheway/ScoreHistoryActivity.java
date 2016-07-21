@@ -1,6 +1,7 @@
 package com.android.yeongjinoh.showmetheway;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -38,11 +39,22 @@ public class ScoreHistoryActivity extends Activity {
             scoreListView.setAdapter(mAdapter);
         }
 
+        // menu button
         Button buttonScoreMenu = (Button) findViewById(R.id.btnScoreMenu);
         buttonScoreMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
+            }
+        });
+
+        // rank button
+        Button buttonScoreRank = (Button) findViewById(R.id.btnScoreRank);
+        buttonScoreRank.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), RankActivity.class);
+                startActivity(intent);
             }
         });
     }
