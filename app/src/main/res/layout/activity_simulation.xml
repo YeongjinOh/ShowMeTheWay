@@ -127,9 +127,9 @@
                 android:layout_width="30dp"
                 android:layout_height="350dp"
                 android:gravity="bottom"
-                android:background="#55ffff33"
+                android:background="#aaffffff"
             >
-                <View
+                <TextView
                     android:id="@+id/powerGaugeBar"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"

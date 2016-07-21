@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -30,10 +31,10 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
 
     // constants for physical system
     private final float dt = 0.01F;
-    private final float maximumPower = 4000.0F;
+    private final float maximumPower = 400.0F;
     private final float surfaceFrictionalRatio = 0.15F;
     private final float cushionConflictChangeRatio = 0.9F;
-    private final float ballConflictChangeRatio = 0.93F;
+    private final float ballConflictChangeRatio = 0.85F;
 
     // the other global variables
     private double angle = Math.PI/4;
@@ -88,7 +89,7 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
         AddBall(yellow);
 
         score = 0;
-        life = 3;
+        life = 1;
         stage = 1;
 
         new UpdateThread().start();
@@ -355,6 +356,7 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
 
                 break;
         }
+
         return true;
     }
 
@@ -362,9 +364,9 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
     class UpdateThread extends Thread {
         public void run() {
             int cnt = 0;
+
             while(!isStart){};
             while(isStart) {
-
                 try {
                     Thread.sleep((long)(1000*dt));
                     move();

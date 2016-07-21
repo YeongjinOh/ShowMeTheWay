@@ -22,13 +22,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         println("creating or opening table [" + TABLE_NAME + "].");
 
-        try {
-            String DROP_SQL = "drop table if exists " + TABLE_NAME;
-            db.execSQL(DROP_SQL);
-        } catch(Exception ex) {
-            Log.e(TAG, "Exception in DROP_SQL", ex);
-        }
-
         String CREATE_SQL = "create table " + TABLE_NAME + "("
                 + " _id integer PRIMARY KEY autoincrement, "
                 + " date text, "
@@ -38,16 +31,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } catch(Exception ex) {
             Log.e(TAG, "Exception in CREATE_SQL", ex);
         }
-
-        // insert sample dats
-        try {
-            db.execSQL("insert into " + TABLE_NAME + "(date, score) values ('sample data1', 100);");
-            db.execSQL("insert into " + TABLE_NAME + "(date, score) values ('sample data2', 200);");
-            db.execSQL("insert into " + TABLE_NAME + "(date, score) values ('sample data3', 50);");
-        } catch (Exception ex) {
-            Log.e("SimulatorActivity", "Exception in insert SQL", ex);
-        }
-
     }
 
     public void onOpen(SQLiteDatabase db) {

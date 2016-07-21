@@ -5,12 +5,15 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.BitmapDrawable;
+import java.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.Date;
 
 /**
  * Created by yeongjinoh on 2016-07-18.
@@ -60,10 +63,16 @@ public class SimulatorActivity extends Activity implements UpdateListener {
         buttonSimulHit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //buttonSimulHit.setH
+                View powerGaugeBar = (View) findViewById(R.id.powerGaugeBar);
+                //powerGaugeBar.heig
+
+
                 billiardTableView.hit();
 
             }
         });
+
     }
 
     @Override
@@ -80,7 +89,13 @@ public class SimulatorActivity extends Activity implements UpdateListener {
     }
 
     public void notifyGaveover (int score) {
-        insertScore(db,"today", Integer.toString(score));
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+
+        SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd");
+        String strDate = sdfNow.format(date);
+        insertScore(db, strDate, Integer.toString(score));
+
         Intent intent = new Intent(getApplicationContext(), GameOverActivity.class);
         intent.putExtra("score",score);
         startActivityForResult(intent, REQUEST_CODE_GAMEOVER);
@@ -91,10 +106,7 @@ public class SimulatorActivity extends Activity implements UpdateListener {
 
         // for gameover activity
         if (requestCode == REQUEST_CODE_GAMEOVER) {
-
-
             if (resultCode == RESULT_OK) { // Retry button pressed
-
             } else if (resultCode == RESULT_CANCELED) { // Exit button pressed
                 finish();
             }
@@ -154,9 +166,11 @@ public class SimulatorActivity extends Activity implements UpdateListener {
         if (isOpen) {
             dbHelper.println("inserting records.");
             try {
-                db.execSQL("insert into " + TABLE_NAME + "(date, score) values (" + date + ", " + score + ");");
+                String query = String.format("INSERT INTO %s (date, score) VALUES ('%s', %s);", TABLE_NAME, date, score);
+                db.execSQL(query);
             } catch (Exception ex) {
                 Log.e("SimulatorActivity", "Exception in insert SQL", ex);
+                ex.printStackTrace();
             }
         }
     }
