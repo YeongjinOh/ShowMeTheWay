@@ -34,8 +34,8 @@ public class ScoreHistoryActivity extends Activity {
             Cursor cursor = executeRawQueryParam();
             startManagingCursor(cursor);
 
-            String[] columns = new String[] {"_id", "date", "score"};
-            int[] to = new int[] { R.id.rank_entry, R.id.date_entry, R.id.score_entry};
+            String[] columns = new String[] {"_id", "score", "date", "time"};
+            int[] to = new int[] { R.id.rank_entry, R.id.score_entry, R.id.date_entry, R.id.time_entry};
             SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(this, R.layout.score_list_item, cursor, columns, to);
 
             scoreListView.setAdapter(mAdapter);
@@ -85,7 +85,7 @@ public class ScoreHistoryActivity extends Activity {
     private Cursor executeRawQueryParam() {
         dbHelper.println("\nexecuteRawQueryParam called.\n");
 
-        String SQL = "select _id, date, score "
+        String SQL = "select _id, score, date, time "
                 + " from " + TABLE_NAME
                 + " order by score desc";
         Cursor c1 = db.rawQuery(SQL, null);

@@ -24,8 +24,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         String CREATE_SQL = "create table " + TABLE_NAME + "("
                 + " _id integer PRIMARY KEY autoincrement, "
+                + " score integer, "
                 + " date text, "
-                + " score integer)";
+                + " time text)";
         try {
             db.execSQL(CREATE_SQL);
         } catch(Exception ex) {

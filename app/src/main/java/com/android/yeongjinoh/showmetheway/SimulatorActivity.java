@@ -92,9 +92,11 @@ public class SimulatorActivity extends Activity implements UpdateListener {
         long now = System.currentTimeMillis();
         Date date = new Date(now);
 
-        SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd");
-        String strDate = sdfNow.format(date);
-        insertScore(db, strDate, Integer.toString(score));
+        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy/MM/dd");
+        SimpleDateFormat sdfTime = new SimpleDateFormat("hh:mm");
+        String strDate = sdfDate.format(date);
+        String strTime = sdfTime.format(date);
+        insertScore(db, Integer.toString(score), strDate, strTime);
 
         Intent intent = new Intent(getApplicationContext(), GameOverActivity.class);
         intent.putExtra("score",score);
@@ -162,11 +164,11 @@ public class SimulatorActivity extends Activity implements UpdateListener {
     }
 
 
-    public void insertScore(SQLiteDatabase db, String date, String score) {
+    public void insertScore(SQLiteDatabase db, String score, String date, String time) {
         if (isOpen) {
             dbHelper.println("inserting records.");
             try {
-                String query = String.format("INSERT INTO %s (date, score) VALUES ('%s', %s);", TABLE_NAME, date, score);
+                String query = String.format("INSERT INTO %s (score, date, time) VALUES (%s, '%s', '%s');", TABLE_NAME, score, date, time);
                 db.execSQL(query);
             } catch (Exception ex) {
                 Log.e("SimulatorActivity", "Exception in insert SQL", ex);
