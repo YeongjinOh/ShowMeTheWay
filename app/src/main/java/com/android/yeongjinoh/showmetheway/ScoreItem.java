@@ -5,24 +5,14 @@ package com.android.yeongjinoh.showmetheway;
  */
 public class ScoreItem {
 
-    private int rank;
     private int score;
     private String date;
     private String time;
 
-    public ScoreItem(int rank, int score, String date, String time) {
-        this.rank = rank;
+    public ScoreItem(int score, String date, String time) {
         this.score = score;
         this.date = date;
         this.time = time;
-    }
-
-    public void setRank(int rank) {
-        this.rank = rank;
-    }
-
-    public int getRank() {
-        return rank;
     }
 
     public void setScore(int score) {

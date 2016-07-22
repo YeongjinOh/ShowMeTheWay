@@ -16,7 +16,7 @@ public class ScoreView extends LinearLayout {
     TextView time;
 
 
-    public ScoreView(Context context, ScoreItem scoreItem) {
+    public ScoreView(Context context, int position, ScoreItem scoreItem) {
         super(context);
 
         LayoutInflater inflater = (LayoutInflater)
@@ -28,12 +28,12 @@ public class ScoreView extends LinearLayout {
         date = (TextView) findViewById(R.id.date_entry);
         time = (TextView) findViewById(R.id.time_entry);
 
-        setItems(scoreItem);
+        setItems(position, scoreItem);
     }
 
-    public void setItems(ScoreItem scoreItem) {
-        rank.setText(scoreItem.getRank());
-        score.setText(scoreItem.getScore());
+    public void setItems(int position, ScoreItem scoreItem) {
+        rank.setText(Integer.toString(position+1));
+        score.setText(Integer.toString(scoreItem.getScore()));
         date.setText(scoreItem.getDate());
         time.setText(scoreItem.getTime());
     }

@@ -14,10 +14,11 @@ import java.util.List;
 public class ScoreListAdapter extends BaseAdapter {
     private Context context;
 
-    private List<ScoreItem> items = new ArrayList<ScoreItem>();
+    private List<ScoreItem> items;
 
     public ScoreListAdapter(Context context) {
         this.context = context;
+        items = new ArrayList<ScoreItem>();
     }
 
     @Override
@@ -32,14 +33,16 @@ public class ScoreListAdapter extends BaseAdapter {
     public ScoreItem getItem(int position) {
         return items.get(position);
     }
-
+    public void addItem (ScoreItem item) {
+        items.add(item);
+    }
     public View getView (int position, View convertView, ViewGroup parent) {
         ScoreView scoreView;
         if (convertView == null) {
-            scoreView = new ScoreView(context,items.get(position));
+            scoreView = new ScoreView(context, position, items.get(position));
         } else {
             scoreView = (ScoreView) convertView;
-            scoreView.setItems(items.get(position));
+            scoreView.setItems(position, items.get(position));
         }
 
         return scoreView;
