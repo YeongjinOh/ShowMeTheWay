@@ -26,6 +26,7 @@ public class SimulatorActivity extends Activity implements UpdateListener {
     private SQLiteDatabase db;
     private static String TABLE_NAME = "score";
     boolean isOpen;
+    String lastgame;
 
     // request code for gameover activity
     public static final int REQUEST_CODE_GAMEOVER = 1001;
@@ -100,6 +101,14 @@ public class SimulatorActivity extends Activity implements UpdateListener {
 
         Intent intent = new Intent(getApplicationContext(), GameOverActivity.class);
         intent.putExtra("score",score);
+
+        // send the time information of last game
+        SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+        lastgame = timeFormat.format(date);
+        Intent resultIntent = new Intent(this, MainActivity.class);
+        resultIntent.putExtra("lastgame",lastgame);
+        setResult(RESULT_OK, resultIntent);
+
         startActivityForResult(intent, REQUEST_CODE_GAMEOVER);
     }
 

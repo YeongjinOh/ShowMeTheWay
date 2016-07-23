@@ -13,6 +13,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String TAG = "ScoreDataBase";
     private static String DATABASE_NAME = "scoreDB";
     private static String TABLE_NAME = "score";
+    private static String TABLE_NAME2 = "time";
     private static int DATABASE_VERSION = 1;
 
     public DatabaseHelper(Context context) {
@@ -32,6 +33,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } catch(Exception ex) {
             Log.e(TAG, "Exception in CREATE_SQL", ex);
         }
+
+        println("creating or opening table [" + TABLE_NAME2 + "].");
+
+        String CREATE_SQL2 = "create table " + TABLE_NAME2 + "("
+                + " _id integer PRIMARY KEY autoincrement, "
+                + " login text, "
+                + " lastgame text, "
+                + " logout text)";
+        try {
+            db.execSQL(CREATE_SQL2);
+        } catch(Exception ex) {
+            Log.e(TAG, "Exception in CREATE_SQL2", ex);
+        }
+
     }
 
     public void onOpen(SQLiteDatabase db) {
@@ -43,6 +58,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.w(TAG, "Upgrading database from version " + oldVersion +
                 " to " + newVersion + ".");
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME2);
         onCreate(db);
     }
 

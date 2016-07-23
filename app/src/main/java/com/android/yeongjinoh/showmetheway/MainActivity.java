@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -18,9 +19,25 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class MainActivity extends AppCompatActivity {
 
     CallbackManager callbackManager;
+    private DatabaseHelper dbHelper;
+    private SQLiteDatabase db;
+    private static String TABLE_NAME2 = "time";
+    private boolean isOpen;
+
+    // user access information to store into database
+    SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+    private String login;
+    private String lastgame;
+    private String logout;
+
+    // request code for simulator activity
+    public static final int REQUEST_CODE_SIMUL = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +45,15 @@ public class MainActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
+
+        // open database to save login time
+        isOpen = openDatabase();
+
+        // get login time
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+        login = timeFormat.format(date);
+        lastgame = null;
 
         // initialize facebook
         FacebookSdk.sdkInitialize(getApplicationContext());
@@ -47,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
             Intent intent = new Intent(getApplicationContext(), SimulatorActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_CODE_SIMUL);
 
             }
         });
@@ -94,12 +120,53 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "로그인 에러", Toast.LENGTH_LONG).show();
             }
         });
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // get logout time
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+        logout = timeFormat.format(date);
+
+        // store user access times into database
+        insertTime(db, login, lastgame, logout);
+
+        dbHelper.close();
+    }
+
+    public void insertTime(SQLiteDatabase db, String login, String lastgame, String logout) {
+        if (isOpen) {
+            dbHelper.println("inserting records.");
+            try {
+                String query = String.format("INSERT INTO %s (login, lastgame, logout) VALUES ('%s', '%s', '%s');", TABLE_NAME2, login, lastgame, logout);
+                db.execSQL(query);
+            } catch (Exception ex) {
+                Log.e("SimulatorActivity", "Exception in insert SQL", ex);
+                ex.printStackTrace();
+            }
+        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        // for simulator activity
+        if (requestCode == REQUEST_CODE_SIMUL) {
+            if (resultCode == RESULT_OK) {
+                lastgame = data.getStringExtra("lastgame");
+            }
+        }
+
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private boolean openDatabase() {
+        dbHelper = new DatabaseHelper(this);
+        db = dbHelper.getWritableDatabase();
+        return true;
     }
 }
