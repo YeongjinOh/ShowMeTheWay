@@ -41,7 +41,7 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
     private int score;
     public boolean isStart = false;
     private Bitmap table;
-    private final int DEFAULT_LIFE = 1;
+    private final int DEFAULT_LIFE = 3;
 
     // flags to calculate score;
     private boolean hitRed1, hitRed2, hitYellow;
@@ -341,19 +341,24 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
     }
 
     // use touch event for cue angle adjusting
-    private float prevY;
+    private float prevAngle, curAngle;
+
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+        Ball white = balls.get(0);
+        float x = white.getX(), y = white.getY();
+
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                prevY = event.getRawY();
+                prevAngle = (float)Math.atan2(event.getRawY()-y,event.getRawX()-x);
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                float rawY = event.getRawY();
-                angle += (float) Math.PI*(prevY-rawY)/3000.0F;
-                prevY = rawY;
+                curAngle = (float)Math.atan2(event.getRawY()-y,event.getRawX()-x);
+                angle += Math.PI*(curAngle - prevAngle);
+                prevAngle = curAngle;
                 postInvalidate();
+
 
                 break;
         }
