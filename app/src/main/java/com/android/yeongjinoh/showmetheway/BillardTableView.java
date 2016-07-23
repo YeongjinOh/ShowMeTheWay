@@ -27,7 +27,7 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
     private final float width = 1224;
     private final float height = 2448;
     private float scaleFactor;
-    private final float margin = 70.0F;
+    private final float margin = 60.0F;
 
     // constants for physical system
     private final float dt = 0.01F;
@@ -149,8 +149,8 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
         paint.setStyle(Paint.Style.FILL);
         paint.setARGB(200,188,143,143);
         paint.setStrokeWidth(20*scaleFactor);
-        canvas.drawLine((float)(x+Math.cos(angle)*radius*1.2+margin)*scaleFactor,(float)(y+Math.sin(angle)*radius*1.2+margin)*scaleFactor,
-                (float)(x+Math.cos(angle)*radius*17.2+margin)*scaleFactor,(float)(y+Math.sin(angle)*radius*17.2+margin)*scaleFactor,paint);
+        canvas.drawLine(convertScale((float)(x+Math.cos(angle)*radius*1.2F)),convertScale((float)(y+Math.sin(angle)*radius*1.2F)),
+                        convertScale((float)(x+Math.cos(angle)*radius*17.2F)),convertScale((float)(y+Math.sin(angle)*radius*17.2F)),paint);
 
         // draw ahead line
         paint.setARGB(100,255,255,255);
@@ -162,7 +162,7 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
             if (i>3 && !checkNoConflictWithAnyBall(x-xStep*i,y-yStep*i) ) {
                 break;
             }
-            canvas.drawCircle((x-xStep*i+margin)*scaleFactor,(y-yStep*i+margin)*scaleFactor, radius/5.0F*scaleFactor, paint);
+            canvas.drawCircle(convertScale(x-xStep*i),convertScale(y-yStep*i), radius/5.0F*scaleFactor, paint);
         }
 
     }
@@ -178,7 +178,7 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
     private void drawBalls (Canvas canvas) {
         for (int i=0; i<balls.size(); i++) {
             Ball curBall = balls.get(i);
-            canvas.drawCircle((curBall.getX()+margin)*scaleFactor, (curBall.getY()+margin)*scaleFactor, curBall.getR()*scaleFactor, curBall.getPaint());
+            canvas.drawCircle(convertScale(curBall.getX()), convertScale(curBall.getY()), curBall.getR()*scaleFactor, curBall.getPaint());
         }
     }
 
@@ -210,12 +210,12 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
             if (Vnorm < 10.0F) {
                 Vx = 0;
                 Vy = 0;
-            }  else if (Vnorm < 100.0F) {
-                Vx = Vx*0.99F;
-                Vy = Vy*0.99F;
+            }  else if (Vnorm < 30.0F) {
+                Vx = Vx*0.98F;
+                Vy = Vy*0.98F;
             }  else if (Vnorm < 500.0F) {
-                Vx = Vx * (1 - surfaceFrictionalRatio*dt) * (Vnorm/500.0F  + 9.0F)/10.0F;
-                Vy = Vy * (1 - surfaceFrictionalRatio*dt) * (Vnorm/500.0F  + 9.0F)/10.0F;
+                Vx = Vx * (1 - surfaceFrictionalRatio*dt) * (Vnorm*2/500.0F  + 98.0F)/100.0F;
+                Vy = Vy * (1 - surfaceFrictionalRatio*dt) * (Vnorm*2/500.0F  + 98.0F)/100.0F;
             }  else {
                 Vx = Vx * (1 - surfaceFrictionalRatio*dt);
                 Vy = Vy * (1 - surfaceFrictionalRatio*dt);
@@ -340,22 +340,27 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
         }
     }
 
+    float convertScale (float billiard) {
+        return (billiard+margin)*scaleFactor;
+    }
+
     // use touch event for cue angle adjusting
     private float prevAngle, curAngle;
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         Ball white = balls.get(0);
-        float x = white.getX(), y = white.getY();
+        float x = convertScale(white.getX()), y = convertScale(white.getY());
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                prevAngle = (float)Math.atan2(event.getRawY()-y,event.getRawX()-x);
+                prevAngle = (float)Math.atan2(event.getY()-y, event.getX()-x);
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                curAngle = (float)Math.atan2(event.getRawY()-y,event.getRawX()-x);
-                angle += Math.PI*(curAngle - prevAngle);
+
+                curAngle = (float)Math.atan2(event.getY()-y,event.getX()-x);
+                angle += curAngle-prevAngle;
                 prevAngle = curAngle;
                 postInvalidate();
 
