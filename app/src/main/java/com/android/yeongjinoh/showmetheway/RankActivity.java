@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import org.apache.http.HttpResponse;
@@ -40,10 +41,16 @@ public class RankActivity extends Activity {
     private DatabaseHelper dbHelper;
     private SQLiteDatabase db;
     private static String TABLE_NAME = "score";
+    private static String TABLE_NAME3 = "rank";
     private String email;
     private String username;
     public static String URL = "http://52.78.84.120:5000/scores/";
 
+    // keys for json
+    List<User> userlist = new ArrayList<User>();
+    private final String KEY1 = "email";
+    private final String KEY2 = "username";
+    private final String KEY3 = "score";
     Handler handler;
 
     @Override
@@ -63,14 +70,20 @@ public class RankActivity extends Activity {
                 + " from " + TABLE_NAME
                 + " order by score desc";
         Cursor c1 = db.rawQuery(SQL, null);
-        c1.moveToNext();
-        int score = c1.getInt(0);
-
+        int score;
+        if (c1 == null) {
+            score = 0;
+        } else {
+            c1.moveToNext();
+            score = c1.getInt(0);
+        }
         TextView scoreView = (TextView) findViewById(R.id.scoreViewRank);
-        scoreView.setText("My score : " + Integer.toString(score) + " " + username + " " + email);
+        scoreView.setText("My score : " + Integer.toString(score));
 
         // send my score to ranking server
         SendScoreByHttp(score);
+        refresh();
+        showRank();
 
         Button buttonBack = (Button) findViewById(R.id.btnRankBack);
         buttonBack.setOnClickListener(new View.OnClickListener() {
@@ -80,6 +93,46 @@ public class RankActivity extends Activity {
             }
         });
     }
+
+    private void showRank() {
+        UserListAdapter adapter = new UserListAdapter(this);
+        ListView rankView = (ListView) findViewById(R.id.listViewRank);
+        for (int i=0; i<userlist.size(); i++) {
+            adapter.addItem(userlist.get(i));
+        }
+        rankView.setAdapter(adapter);
+    }
+
+    private void refresh() {
+        String str =
+                "{'User':"+
+                        String.format("[{'%s':'sample1@gmail.com','%s':'Raccoon','%s':1420},", KEY1, KEY2, KEY3) +
+                        String.format("{'%s':'sample2@naver.com','%s':'전민영','%s':10},", KEY1, KEY2, KEY3) +
+                        String.format("{'%s':'sample3@gmail.com','%s':'Hyungmin','%s':0},", KEY1, KEY2, KEY3) +
+                        String.format("{'%s':'sample4@hanmail.net','%s':'주희재','%s':1420}]}", KEY1, KEY2, KEY3);
+
+
+
+        try {
+            JSONObject jObj = new JSONObject(str);
+            JSONArray jUsers = jObj.getJSONArray("User");
+            for(int i=0; i < jUsers.length(); i++){
+                JSONObject jUser = jUsers.getJSONObject(i);
+                User user = new User(jUser.getString(KEY1), jUser.getString(KEY2), jUser.getInt(KEY3));
+                userlist.add(user);
+                /*
+                String query = String.format("INSERT INTO %s (email, username, score) VALUES ('%s', '%s', %s);", TABLE_NAME3,
+                        user.getString("email"), user.get("username"), user.getInt("score"));
+                db.execSQL(query);
+                */
+            }
+        } catch (JSONException e) {
+            Log.e("Rank", "JSON exception");
+//        } catch (Exception e) {
+//            Log.e("Rank", "Exception in insert SQL", e);
+        }
+    }
+
 
     private void SendScoreByHttp(int score) {
 
@@ -101,5 +154,8 @@ public class RankActivity extends Activity {
             Log.e("RankActivity","IO exception");
         }
     }
+
+
+
 
 }

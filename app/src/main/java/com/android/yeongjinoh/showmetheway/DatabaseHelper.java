@@ -14,6 +14,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static String DATABASE_NAME = "scoreDB";
     private static String TABLE_NAME = "score";
     private static String TABLE_NAME2 = "time";
+    private static String TABLE_NAME3 = "rank";
     private static int DATABASE_VERSION = 1;
 
     public DatabaseHelper(Context context) {
@@ -45,6 +46,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL(CREATE_SQL2);
         } catch(Exception ex) {
             Log.e(TAG, "Exception in CREATE_SQL2", ex);
+        }
+
+
+        println("creating or opening table [" + TABLE_NAME3 + "].");
+
+        String CREATE_SQL3 = "create table " + TABLE_NAME3 + "("
+                + " email text PRIMARY KEY, "
+                + " username text, "
+                + " score integer)";
+        try {
+            db.execSQL(CREATE_SQL3);
+        } catch(Exception ex) {
+            Log.e(TAG, "Exception in CREATE_SQL3", ex);
         }
 
     }
