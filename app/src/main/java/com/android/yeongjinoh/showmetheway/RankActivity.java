@@ -16,23 +16,20 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -53,7 +50,7 @@ public class RankActivity extends Activity {
     private int score;
 
     // web server
-    public static String URL = "http://143.248.179.147/scores/";
+    public static String URL = "http://143.248.179.147/yj/scores/";
 
     // keys for json
     List<User> userlist = new ArrayList<User>();
@@ -104,7 +101,7 @@ public class RankActivity extends Activity {
     }
 
     private void showRank() {
-        UserListAdapter adapter = new UserListAdapter(this);
+        UserListAdapter adapter = new UserListAdapter(this, email);
         ListView rankView = (ListView) findViewById(R.id.listViewRank);
 
         // sort before showing
@@ -168,7 +165,8 @@ public class RankActivity extends Activity {
         DefaultHttpClient client = new DefaultHttpClient();
         try {
 
-            HttpPost post = new HttpPost(URL+"insert");
+
+            HttpPost post = new HttpPost(URL+"insert/");
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("email",email));
             params.add(new BasicNameValuePair("name",username));
