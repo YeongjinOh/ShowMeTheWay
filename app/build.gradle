@@ -5,7 +5,7 @@ android {
     buildToolsVersion "24.0.0"
 
     defaultConfig {
-        applicationId "com.android.yeongjinoh.showmetheway"
+        applicationId "com.billiard.yeongjinoh.showmetheway"
         minSdkVersion 15
         targetSdkVersion 24
         versionCode 1

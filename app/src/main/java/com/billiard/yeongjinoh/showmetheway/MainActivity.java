@@ -1,4 +1,4 @@
-package com.android.yeongjinoh.showmetheway;
+package com.billiard.yeongjinoh.showmetheway;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,6 +11,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
+
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;

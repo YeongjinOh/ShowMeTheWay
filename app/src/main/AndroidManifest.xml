@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-    package="com.android.yeongjinoh.showmetheway">
+    package="com.billiard.yeongjinoh.showmetheway">
     <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
@@ -9,20 +9,20 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name="com.billiard.yeongjinoh.showmetheway.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SimulatorActivity"></activity>
-        <activity android:name=".ScoreHistoryActivity"></activity>
-        <activity android:name=".GameOverActivity"
+        <activity android:name="com.billiard.yeongjinoh.showmetheway.SimulatorActivity"></activity>
+        <activity android:name="com.billiard.yeongjinoh.showmetheway.ScoreHistoryActivity"></activity>
+        <activity android:name="com.billiard.yeongjinoh.showmetheway.GameOverActivity"
             android:theme="@style/Theme.AppCompat.Light.Dialog"></activity>
-        <activity android:name=".AccountSetActivity"></activity>
-        <activity android:name=".RankActivity"></activity>
-        <activity android:name=".GameRuleActivity"></activity>
+        <activity android:name="com.billiard.yeongjinoh.showmetheway.AccountSetActivity"></activity>
+        <activity android:name="com.billiard.yeongjinoh.showmetheway.RankActivity"></activity>
+        <activity android:name="com.billiard.yeongjinoh.showmetheway.GameRuleActivity"></activity>
         <meta-data android:name="com.facebook.sdk.ApplicationId"
                     android:value="@string/facebook_app_id"/>
         <activity android:name="com.facebook.FacebookActivity"

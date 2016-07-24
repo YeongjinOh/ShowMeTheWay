@@ -1,4 +1,4 @@
-package com.android.yeongjinoh.showmetheway;
+package com.billiard.yeongjinoh.showmetheway;
 
 import android.app.Activity;
 import android.content.Intent;

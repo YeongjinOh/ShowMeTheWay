@@ -1,4 +1,4 @@
-package com.android.yeongjinoh.showmetheway;
+package com.billiard.yeongjinoh.showmetheway;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -8,7 +8,6 @@ import android.widget.BaseAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 /**
  * Created by yeongjinoh on 2016-07-24.
@@ -50,6 +49,8 @@ public class UserListAdapter extends BaseAdapter {
         }
         if (key.equals(user.getEmail())) {
             userView.setBackgroundColor(Color.argb(187, 187, 187, 221));
+        } else {
+            userView.setBackgroundColor(Color.argb(187, 119, 119, 153));
         }
         return userView;
     }

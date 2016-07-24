@@ -1,17 +1,16 @@
-package com.android.yeongjinoh.showmetheway;
+package com.billiard.yeongjinoh.showmetheway;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+
 
 import java.util.ArrayList;
 

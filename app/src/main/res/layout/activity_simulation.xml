@@ -61,7 +61,7 @@
             android:orientation="vertical"
             android:layout_weight="1"
             >
-            <com.android.yeongjinoh.showmetheway.BillardTableView
+            <com.billiard.yeongjinoh.showmetheway.BillardTableView
                 android:id="@+id/billiardTableView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
