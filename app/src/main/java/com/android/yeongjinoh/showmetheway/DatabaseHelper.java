@@ -5,6 +5,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by yeongjinoh on 2016-07-21.
  */
@@ -53,16 +56,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         String CREATE_SQL3 = "create table " + TABLE_NAME3 + "("
                 + " email text PRIMARY KEY, "
-                + " username text, "
+                + " name text, "
                 + " score integer)";
         try {
             db.execSQL(CREATE_SQL3);
+            setSampleUsers(db);
         } catch(Exception ex) {
             Log.e(TAG, "Exception in CREATE_SQL3", ex);
         }
-
     }
-
     public void onOpen(SQLiteDatabase db) {
         println("opened database [" + DATABASE_NAME + "].");
 
@@ -76,6 +78,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public void setSampleUsers(SQLiteDatabase db) {
+        String[] namelist = {"Raccoon","Sungmin Oh","주희재", "전민영", "Hyungmin", "Gungee kim", "이슬기", "김경률", "Minsu", "YJ"};
+        int[] scorelist = {4820, 3420, 2480, 1020, 520, 0, 20, 10, 10, 130};
+        for (int i=0; i<10; i++) {
+            String query = String.format("INSERT INTO %s (email, name, score) VALUES ('sample%s@gmail.com', '%s', %s);", TABLE_NAME3,
+                    Integer.toString(i), namelist[i], Integer.toString(scorelist[i]));
+            db.execSQL(query);
+        }
+    }
 
     public void println(String msg) {
         Log.d(TAG, msg);

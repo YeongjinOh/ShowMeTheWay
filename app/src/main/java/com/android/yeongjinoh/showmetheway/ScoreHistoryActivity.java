@@ -87,7 +87,7 @@ public class ScoreHistoryActivity extends Activity {
         return true;
     }
 
-    // this method read all records and store them into list of ScoreItem
+    // Read all records and store them into list of ScoreItem
     private void executeRawQueryParam() {
         dbHelper.println("\nexecuteRawQueryParam called.\n");
 

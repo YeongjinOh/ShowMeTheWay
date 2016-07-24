@@ -55,7 +55,7 @@ public class RankActivity extends Activity {
     // keys for json
     List<User> userlist = new ArrayList<User>();
     private final String KEY1 = "email";
-    private final String KEY2 = "username";
+    private final String KEY2 = "name";
     private final String KEY3 = "score";
     Handler handler;
 
@@ -87,7 +87,7 @@ public class RankActivity extends Activity {
         scoreView.setText("My score : " + Integer.toString(score));
 
         // send my score to ranking server
-        SendScoreByHttp(score);
+        SendScoreByHttp();
         refresh();
         showRank();
 
@@ -119,48 +119,38 @@ public class RankActivity extends Activity {
         rankView.setAdapter(adapter);
     }
 
+
+
+    // Read user information from database
     private void refresh() {
-        String str =
-                "{'User':"+
-                        String.format("[{'%s':'sample1@gmail.com','%s':'Raccoon','%s':1420},", KEY1, KEY2, KEY3) +
-                        String.format("{'%s':'sample2@naver.com','%s':'전민영','%s':10},", KEY1, KEY2, KEY3) +
-                        String.format("{'%s':'sample3@snu.ac.kr','%s':'Sungmin Oh','%s':4810},", KEY1, KEY2, KEY3) +
-                        String.format("{'%s':'sample4@gmail.com','%s':'Hyungmin','%s':0},", KEY1, KEY2, KEY3) +
-                        String.format("{'%s':'sample5@hanmail.net','%s':'주희재','%s':1120}]}", KEY1, KEY2, KEY3);
+        boolean insertFlag = true;
 
-        boolean flagInsert = true;
+        String SQL = "select email, name, score "
+                + " from " + TABLE_NAME3
+                + " order by score desc";
+        Cursor c1 = db.rawQuery(SQL, null);
 
-        try {
-            JSONObject jObj = new JSONObject(str);
-            JSONArray jUsers = jObj.getJSONArray("User");
-            for(int i=0; i < jUsers.length(); i++){
-                JSONObject jUser = jUsers.getJSONObject(i);
-                User user = new User(jUser.getString(KEY1), jUser.getString(KEY2), jUser.getInt(KEY3));
-                userlist.add(user);
-                String jEmail = jUser.getString(KEY1);
-                if (email.equals(jEmail)) {
-                    flagInsert = false;
-                }
-                /*
-                String query = String.format("INSERT INTO %s (email, username, score) VALUES ('%s', '%s', %s);", TABLE_NAME3,
-                        user.getString("email"), user.get("username"), user.getInt("score"));
-                db.execSQL(query);
-                */
+        // read all datas and store into the list
+        for (int i=0; i < c1.getCount(); i++) {
+            c1.moveToNext();
+            String cur_email = c1.getString(0);
+            if (cur_email.equals(email)) {
+                insertFlag = false;
             }
-        } catch (JSONException e) {
-            Log.e("Rank", "JSON exception");
-//        } catch (Exception e) {
-//            Log.e("Rank", "Exception in insert SQL", e);
+            String cur_name = c1.getString(1);
+            int cur_score = c1.getInt(2);
+            userlist.add(new User(cur_email, cur_name, cur_score));
         }
 
-        if (flagInsert) {
-            User user = new User(email, username, score);
-            userlist.add(user);
+        if (insertFlag) {
+            userlist.add(new User(email, username, score));
         }
+        // close cursor
+        c1.close();
     }
 
 
-    private void SendScoreByHttp(int score) {
+    private void SendScoreByHttp() {
 
         DefaultHttpClient client = new DefaultHttpClient();
         try {
@@ -175,10 +165,27 @@ public class RankActivity extends Activity {
 
             HttpResponse response = client.execute(post);
 
+            // get json from server and store user information in database
+            JSONObject jObj = new JSONObject(response.toString());
+            JSONArray jUsers = jObj.getJSONArray("User");
+            for(int i=0; i < jUsers.length(); i++) {
+                JSONObject jUser = jUsers.getJSONObject(i);
+                User user = new User(jUser.getString(KEY1), jUser.getString(KEY2), jUser.getInt(KEY3));
+                String query = String.format("INSERT INTO %s (email, username, score) VALUES ('%s', '%s', %s);", TABLE_NAME3,
+                        jUser.getString(KEY1), jUser.getString(KEY2), jUser.getInt(KEY3));
+                db.execSQL(query);
+            }
+
         } catch (ClientProtocolException e) {
-            Log.e("RankActivity","Client protocol exception");
+            Log.e("RankActivity","Client protocol exception", e);
         } catch (IOException e) {
-            Log.e("RankActivity","IO exception");
+            Log.e("RankActivity","IO exception",e );
+        } catch (JSONException e){
+            Log.e("RankActivity","JSON exception",e );
+        } catch (RuntimeException e) {
+            Log.e("RankActivity","Runtime exception",e );
+        } catch (Exception e) {
+            Log.e("RankActivity","exception",e );
         }
     }
 
