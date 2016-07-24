@@ -87,7 +87,7 @@ public class RankActivity extends Activity {
         scoreView.setText("My score : " + Integer.toString(score));
 
         // send my score to ranking server
-        SendScoreByHttp();
+        // SendScoreByHttp();
         refresh();
         showRank();
 
