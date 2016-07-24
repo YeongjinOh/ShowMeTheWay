@@ -31,6 +31,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -42,9 +46,14 @@ public class RankActivity extends Activity {
     private SQLiteDatabase db;
     private static String TABLE_NAME = "score";
     private static String TABLE_NAME3 = "rank";
+
+    // user information
     private String email;
     private String username;
-    public static String URL = "http://52.78.84.120:5000/scores/";
+    private int score;
+
+    // web server
+    public static String URL = "http://143.248.179.147/scores/";
 
     // keys for json
     List<User> userlist = new ArrayList<User>();
@@ -70,8 +79,8 @@ public class RankActivity extends Activity {
                 + " from " + TABLE_NAME
                 + " order by score desc";
         Cursor c1 = db.rawQuery(SQL, null);
-        int score;
-        if (c1 == null) {
+        int numScores = c1.getCount();
+        if (numScores < 1) {
             score = 0;
         } else {
             c1.moveToNext();
@@ -97,6 +106,16 @@ public class RankActivity extends Activity {
     private void showRank() {
         UserListAdapter adapter = new UserListAdapter(this);
         ListView rankView = (ListView) findViewById(R.id.listViewRank);
+
+        // sort before showing
+        Collections.sort(userlist, new Comparator<User>() {
+            @Override
+            public int compare(User user, User compareUser) {
+                return compareUser.getScore() - user.getScore();
+            }
+        });
+
+        // show all user scores
         for (int i=0; i<userlist.size(); i++) {
             adapter.addItem(userlist.get(i));
         }
@@ -108,10 +127,11 @@ public class RankActivity extends Activity {
                 "{'User':"+
                         String.format("[{'%s':'sample1@gmail.com','%s':'Raccoon','%s':1420},", KEY1, KEY2, KEY3) +
                         String.format("{'%s':'sample2@naver.com','%s':'전민영','%s':10},", KEY1, KEY2, KEY3) +
-                        String.format("{'%s':'sample3@gmail.com','%s':'Hyungmin','%s':0},", KEY1, KEY2, KEY3) +
-                        String.format("{'%s':'sample4@hanmail.net','%s':'주희재','%s':1420}]}", KEY1, KEY2, KEY3);
+                        String.format("{'%s':'sample3@snu.ac.kr','%s':'Sungmin Oh','%s':4810},", KEY1, KEY2, KEY3) +
+                        String.format("{'%s':'sample4@gmail.com','%s':'Hyungmin','%s':0},", KEY1, KEY2, KEY3) +
+                        String.format("{'%s':'sample5@hanmail.net','%s':'주희재','%s':1120}]}", KEY1, KEY2, KEY3);
 
-
+        boolean flagInsert = true;
 
         try {
             JSONObject jObj = new JSONObject(str);
@@ -120,6 +140,10 @@ public class RankActivity extends Activity {
                 JSONObject jUser = jUsers.getJSONObject(i);
                 User user = new User(jUser.getString(KEY1), jUser.getString(KEY2), jUser.getInt(KEY3));
                 userlist.add(user);
+                String jEmail = jUser.getString(KEY1);
+                if (email.equals(jEmail)) {
+                    flagInsert = false;
+                }
                 /*
                 String query = String.format("INSERT INTO %s (email, username, score) VALUES ('%s', '%s', %s);", TABLE_NAME3,
                         user.getString("email"), user.get("username"), user.getInt("score"));
@@ -130,6 +154,11 @@ public class RankActivity extends Activity {
             Log.e("Rank", "JSON exception");
 //        } catch (Exception e) {
 //            Log.e("Rank", "Exception in insert SQL", e);
+        }
+
+        if (flagInsert) {
+            User user = new User(email, username, score);
+            userlist.add(user);
         }
     }
 
