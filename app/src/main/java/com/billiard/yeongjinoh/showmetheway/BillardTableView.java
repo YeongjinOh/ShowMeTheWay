@@ -148,6 +148,7 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
         paint.setStyle(Paint.Style.FILL);
         paint.setARGB(200,188,143,143);
         paint.setStrokeWidth(20*scaleFactor);
+        paint.setAntiAlias(true);
         canvas.drawLine(convertScale((float)(x+Math.cos(angle)*radius*1.2F)),convertScale((float)(y+Math.sin(angle)*radius*1.2F)),
                         convertScale((float)(x+Math.cos(angle)*radius*17.2F)),convertScale((float)(y+Math.sin(angle)*radius*17.2F)),paint);
 
