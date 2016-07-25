@@ -7,6 +7,6 @@
     <color name="nonPressed1">#AAFFFFFF</color>
     <color name="pressed2">#FFFF9988</color>
     <color name="nonPressed2">#DDFFFF88</color>
-    <color name="pressed3">#FFAAAACC</color>
+    <color name="pressed3">#FF9999FF</color>
     <color name="nonPressed3">#BBAAAACC</color>
 </resources>

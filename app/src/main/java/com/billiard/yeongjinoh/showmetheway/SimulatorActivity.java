@@ -96,8 +96,8 @@ public class SimulatorActivity extends Activity implements UpdateListener {
         spinContorller.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Intent intent= new Intent(getApplicationContext(), SpinControlActivity.class);
-                //startActivityForResult(intent, REQUEST_CODE_SPINCONTROLLER);
+                Intent intent= new Intent(getApplicationContext(), SpinControlActivity.class);
+                startActivityForResult(intent, REQUEST_CODE_SPINCONTROLLER);
             }
         });
     }
