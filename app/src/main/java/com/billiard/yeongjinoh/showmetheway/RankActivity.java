@@ -4,17 +4,20 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
+import org.apache.http.StatusLine;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -24,7 +27,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -38,7 +44,6 @@ public class RankActivity extends Activity {
     private DatabaseHelper dbHelper;
     private SQLiteDatabase db;
     private static String TABLE_NAME = "score";
-    private static String TABLE_NAME3 = "rank";
 
     // user information
     private String email;
@@ -46,14 +51,18 @@ public class RankActivity extends Activity {
     private int score;
 
     // web server
-    public static String URL = "http://143.248.179.147/yj/scores/";
+    private static String URL = "http://143.248.179.147/yj/scores/insert";
+    private String output;
 
     // keys for json
     List<User> userlist = new ArrayList<User>();
     private final String KEY1 = "email";
     private final String KEY2 = "name";
     private final String KEY3 = "score";
-    Handler handler;
+
+    // adapter to draw user list
+    UserListAdapter adapter;
+    ListView rankView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +73,10 @@ public class RankActivity extends Activity {
         SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
         username = pref.getString("username", "");
         email = pref.getString("emailaddress", "");
+
+        // initialize adapter and rankView
+        adapter = new UserListAdapter(this, email);
+        rankView = (ListView) findViewById(R.id.listViewRank);
 
         // get my best score
         dbHelper = new DatabaseHelper(this);
@@ -83,9 +96,7 @@ public class RankActivity extends Activity {
         scoreView.setText("My score : " + Integer.toString(score));
 
         // send my score to ranking server
-        // SendScoreByHttp();
-        refresh();
-        showRank();
+        new Connection().execute();
 
         Button buttonBack = (Button) findViewById(R.id.btnRankBack);
         buttonBack.setOnClickListener(new View.OnClickListener() {
@@ -96,9 +107,7 @@ public class RankActivity extends Activity {
         });
     }
 
-    private void showRank() {
-        UserListAdapter adapter = new UserListAdapter(this, email);
-        ListView rankView = (ListView) findViewById(R.id.listViewRank);
+    private void ShowRank() {
 
         // sort before showing
         Collections.sort(userlist, new Comparator<User>() {
@@ -107,85 +116,85 @@ public class RankActivity extends Activity {
                 return compareUser.getScore() - user.getScore();
             }
         });
-
         // show all user scores
         for (int i=0; i<userlist.size(); i++) {
             adapter.addItem(userlist.get(i));
         }
-        rankView.setAdapter(adapter);
-    }
 
-
-
-    // Read user information from database
-    private void refresh() {
-        boolean insertFlag = true;
-
-        String SQL = "select email, name, score "
-                + " from " + TABLE_NAME3
-                + " order by score desc";
-        Cursor c1 = db.rawQuery(SQL, null);
-
-        // read all datas and store into the list
-        for (int i=0; i < c1.getCount(); i++) {
-            c1.moveToNext();
-            String cur_email = c1.getString(0);
-            if (cur_email.equals(email)) {
-                insertFlag = false;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                rankView.setAdapter(adapter);
             }
-            String cur_name = c1.getString(1);
-            int cur_score = c1.getInt(2);
-            userlist.add(new User(cur_email, cur_name, cur_score));
-        }
+        });
+    }
 
-        if (insertFlag) {
-            userlist.add(new User(email, username, score));
+    private void GetUserLists() {
+        try {
+            JSONObject jObj = new JSONObject(output);
+            JSONArray jUsers = jObj.getJSONArray("User");
+            for(int i=0; i < jUsers.length(); i++){
+                JSONObject jUser = jUsers.getJSONObject(i);
+                User user = new User(jUser.getString(KEY1), jUser.getString(KEY2), jUser.getInt(KEY3));
+                userlist.add(user);
+            }
+        } catch (JSONException e) {
+            Log.e("Rank", "JSON exception", e);
+        } catch (Exception e) {
+            Log.e("Rank", "Exception", e);
         }
-        // close cursor
-        c1.close();
+    }
+
+    private void ConnectionFails () {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(),"인터넷에 연결할 수 없습니다.", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
 
-    private void SendScoreByHttp() {
+    private class Connection extends AsyncTask {
+        @Override
+        protected Object doInBackground(Object... arg0) {
+            connect();
+            return null;
+        }
+    }
 
-        DefaultHttpClient client = new DefaultHttpClient();
+    private void connect() {
         try {
 
-
-            HttpPost post = new HttpPost(URL+"insert/");
+            DefaultHttpClient client = new DefaultHttpClient();
+            HttpPost post = new HttpPost(URL);
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("email",email));
             params.add(new BasicNameValuePair("name",username));
             params.add(new BasicNameValuePair("score",Integer.toString(score)));
-            post.setEntity(new UrlEncodedFormEntity(params));
+            post.setEntity(new UrlEncodedFormEntity(params, "utf-8"));
 
             HttpResponse response = client.execute(post);
-
-            // get json from server and store user information in database
-            JSONObject jObj = new JSONObject(response.toString());
-            JSONArray jUsers = jObj.getJSONArray("User");
-            for(int i=0; i < jUsers.length(); i++) {
-                JSONObject jUser = jUsers.getJSONObject(i);
-                User user = new User(jUser.getString(KEY1), jUser.getString(KEY2), jUser.getInt(KEY3));
-                String query = String.format("INSERT INTO %s (email, username, score) VALUES ('%s', '%s', %s);", TABLE_NAME3,
-                        jUser.getString(KEY1), jUser.getString(KEY2), jUser.getInt(KEY3));
-                db.execSQL(query);
+            StatusLine statusLine = response.getStatusLine();
+            int statusCode = statusLine.getStatusCode();
+            if (statusCode == 200) {
+                HttpEntity entity = response.getEntity();
+                InputStream content = entity.getContent();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(content));
+                String line;
+                StringBuilder str = new StringBuilder();
+                while((line = reader.readLine()) != null) {
+                    str.append(line);
+                }
+                output = str.toString();
+                GetUserLists();
+                ShowRank();
+            } else {
+                ConnectionFails();
             }
-
-        } catch (ClientProtocolException e) {
-            Log.e("RankActivity","Client protocol exception", e);
         } catch (IOException e) {
-            Log.e("RankActivity","IO exception",e );
-        } catch (JSONException e){
-            Log.e("RankActivity","JSON exception",e );
-        } catch (RuntimeException e) {
-            Log.e("RankActivity","Runtime exception",e );
-        } catch (Exception e) {
-            Log.e("RankActivity","exception",e );
+            Log.d("HTTPCLIENT", e.getLocalizedMessage());
+            ConnectionFails();
         }
     }
-
-
-
-
 }
