@@ -21,6 +21,7 @@ import java.util.Date;
 public class SimulatorActivity extends Activity implements UpdateListener {
 
     BillardTableView billiardTableView;
+    private boolean isRunning;
 
     // database to save score
     private DatabaseHelper dbHelper;
@@ -71,18 +72,19 @@ public class SimulatorActivity extends Activity implements UpdateListener {
 
         // set hit button
         isHitPressed = false;
+        isRunning = false;
         Button buttonSimulHit = (Button) findViewById(R.id.btnSimulHit);
         buttonSimulHit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //buttonSimulHit.setH
-                View powerGaugeBar = (View) findViewById(R.id.powerGaugeBar);
-                //powerGaugeBar.heig
-                isHitPressed = !isHitPressed;
-                if (isHitPressed) {
-                    new PowerUpdateThread().start();
-                } else {
-                    billiardTableView.hit(power);
+                if(!isRunning) {
+                    isHitPressed = !isHitPressed;
+                    if (isHitPressed) {
+                        new PowerUpdateThread().start();
+                    } else {
+                        billiardTableView.hit(power);
+                        isRunning = true;
+                    }
                 }
 
             }
@@ -126,6 +128,7 @@ public class SimulatorActivity extends Activity implements UpdateListener {
     // reset flags when all balls stop
     private void onAllStop() {
         isHitPressed = false;
+        isRunning = false;
         power = 0.0F;
         powerGaugeBar.updatePower(power);
     }

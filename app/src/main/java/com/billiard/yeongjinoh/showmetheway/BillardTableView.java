@@ -330,8 +330,8 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
             UpdateListener.onLifeUpdate(life,score);
         } else if (hitRed1 && hitRed2) {
             score += (10 * (int)Math.pow(2,stage-1));
-            UpdateListener.onScoreUpdate(score);
         }
+        UpdateListener.onScoreUpdate(score);
         stage++;
 
         if (life == 0) {
