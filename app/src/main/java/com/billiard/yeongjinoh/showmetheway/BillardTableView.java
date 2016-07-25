@@ -190,6 +190,7 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
             randomY = radius + (float)Math.random()*(height-radius);
         }
         // now, given random values doesn't make conflict with any other ball.
+        paint.setAntiAlias(true);
         balls.add(new Ball(paint, radius, randomX, randomY));
     }
 
