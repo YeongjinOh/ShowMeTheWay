@@ -9,20 +9,21 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.billiard.yeongjinoh.showmetheway.MainActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.billiard.yeongjinoh.showmetheway.SimulatorActivity"></activity>
-        <activity android:name="com.billiard.yeongjinoh.showmetheway.ScoreHistoryActivity"></activity>
-        <activity android:name="com.billiard.yeongjinoh.showmetheway.GameOverActivity"
+        <activity android:name=".SimulatorActivity"></activity>
+        <activity android:name=".ScoreHistoryActivity"></activity>
+        <activity android:name=".GameOverActivity"
             android:theme="@style/Theme.AppCompat.Light.Dialog"></activity>
-        <activity android:name="com.billiard.yeongjinoh.showmetheway.AccountSetActivity"></activity>
-        <activity android:name="com.billiard.yeongjinoh.showmetheway.RankActivity"></activity>
-        <activity android:name="com.billiard.yeongjinoh.showmetheway.GameRuleActivity"></activity>
+        <activity android:name=".AccountSetActivity"></activity>
+        <activity android:name=".RankActivity"></activity>
+        <activity android:name=".GameRuleActivity"></activity>
+        <activity android:name=".SpinControlActivity"></activity>
         <meta-data android:name="com.facebook.sdk.ApplicationId"
                     android:value="@string/facebook_app_id"/>
         <activity android:name="com.facebook.FacebookActivity"

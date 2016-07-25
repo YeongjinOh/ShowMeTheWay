@@ -37,8 +37,9 @@ public class SimulatorActivity extends Activity implements UpdateListener {
     private boolean isHitPressed;
     private float power;
 
-    // request code for gameover activity
+    // request codes for the other activities
     public static final int REQUEST_CODE_GAMEOVER = 1001;
+    public static final int REQUEST_CODE_SPINCONTROLLER = 1002;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +88,16 @@ public class SimulatorActivity extends Activity implements UpdateListener {
                     }
                 }
 
+            }
+        });
+
+        // set spin controller
+        ImageView spinContorller = (ImageView) findViewById(R.id.imgViewSpinControl);
+        spinContorller.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Intent intent= new Intent(getApplicationContext(), SpinControlActivity.class);
+                //startActivityForResult(intent, REQUEST_CODE_SPINCONTROLLER);
             }
         });
     }
