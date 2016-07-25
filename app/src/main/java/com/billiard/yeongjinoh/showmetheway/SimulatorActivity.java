@@ -20,13 +20,21 @@ import java.util.Date;
  */
 public class SimulatorActivity extends Activity implements UpdateListener {
 
+    BillardTableView billiardTableView;
 
     // database to save score
     private DatabaseHelper dbHelper;
     private SQLiteDatabase db;
     private static String TABLE_NAME = "score";
-    boolean isOpen;
+    private boolean isOpen;
+
+    // the time that last game ends
     String lastgame;
+
+    // to control power gauge bar
+    PowerGaugeBarView powerGaugeBar;
+    private boolean isHitPressed;
+    private float power;
 
     // request code for gameover activity
     public static final int REQUEST_CODE_GAMEOVER = 1001;
@@ -47,8 +55,10 @@ public class SimulatorActivity extends Activity implements UpdateListener {
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
 
         // set score update listener
-        final BillardTableView billiardTableView = (BillardTableView) findViewById(R.id.billiardTableView);
+        billiardTableView = (BillardTableView) findViewById(R.id.billiardTableView);
         billiardTableView.setUpdateListener(this);
+
+        powerGaugeBar = (PowerGaugeBarView) findViewById(R.id.powerGaugeBar);
 
         // set menu button
         Button buttonSimulMenu = (Button) findViewById(R.id.btnSimulMenu);
@@ -60,6 +70,7 @@ public class SimulatorActivity extends Activity implements UpdateListener {
         });
 
         // set hit button
+        isHitPressed = false;
         Button buttonSimulHit = (Button) findViewById(R.id.btnSimulHit);
         buttonSimulHit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,14 +78,35 @@ public class SimulatorActivity extends Activity implements UpdateListener {
                 //buttonSimulHit.setH
                 View powerGaugeBar = (View) findViewById(R.id.powerGaugeBar);
                 //powerGaugeBar.heig
-
-
-                billiardTableView.hit();
+                isHitPressed = !isHitPressed;
+                if (isHitPressed) {
+                    new PowerUpdateThread().start();
+                } else {
+                    billiardTableView.hit(power);
+                }
 
             }
         });
-
     }
+
+    class PowerUpdateThread extends Thread {
+        public void run () {
+            double time = 0;
+            long dt = 50;
+            while (isHitPressed) {
+                try {
+                    time += (Math.PI * dt / 1000);
+                    power = (float)(1-Math.cos(time))/2.0F;
+                    powerGaugeBar.updatePower(power);
+                    Thread.sleep(dt);
+                } catch (Exception e) {
+                    Log.e("Simul","PowerUpdateThread Exception",e);
+                }
+            }
+            return;
+        }
+    }
+
 
     @Override
     protected void onDestroy() {
@@ -87,9 +119,18 @@ public class SimulatorActivity extends Activity implements UpdateListener {
         TextView textView = (TextView) findViewById(R.id.scoreText);
         String value = "SCORE : " + Integer.toString(score);
         setText(textView, value);
+
+        onAllStop();
     }
 
-    public void notifyGaveover (int score) {
+    // reset flags when all balls stop
+    private void onAllStop() {
+        isHitPressed = false;
+        power = 0.0F;
+        powerGaugeBar.updatePower(power);
+    }
+
+    public void notifyGameover(int score) {
         long now = System.currentTimeMillis();
         Date date = new Date(now);
 
@@ -140,7 +181,7 @@ public class SimulatorActivity extends Activity implements UpdateListener {
             case 0:
                 life3 = (ImageView) findViewById(R.id.imgSimulLife3);
 		        life3.setImageDrawable(yellow);
-                notifyGaveover(score);
+                notifyGameover(score);
                 break;
             case 1:
                 life2 = (ImageView) findViewById(R.id.imgSimulLife2);
@@ -194,5 +235,4 @@ public class SimulatorActivity extends Activity implements UpdateListener {
             }
         });
     }
-
 }

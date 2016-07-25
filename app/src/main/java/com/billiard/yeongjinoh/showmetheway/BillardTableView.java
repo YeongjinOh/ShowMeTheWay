@@ -30,7 +30,7 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
 
     // constants for physical system
     private final float dt = 0.01F;
-    private final float maximumPower = 3000.0F;
+    private final float maximumPower = 4000.0F;
     private final float surfaceFrictionalRatio = 0.15F;
     private final float cushionConflictChangeRatio = 0.9F;
     private final float ballConflictChangeRatio = 0.85F;
@@ -123,7 +123,7 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
         UpdateListener.onScoreUpdate(score);
     }
 
-    public void hit() {
+    public void hit(float power) {
         if (!isStart) {
 
             // reset flags
@@ -132,8 +132,8 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
             hitYellow = false;
 
             Ball white = balls.get(0);
-            white.setVx(-maximumPower*(float)Math.cos(angle));
-            white.setVy(-maximumPower*(float)Math.sin(angle));
+            white.setVx(-maximumPower*power*(float)Math.cos(angle));
+            white.setVy(-maximumPower*power*(float)Math.sin(angle));
             isStart = true;
         }
     }
@@ -365,6 +365,7 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
 
 
                 break;
+
         }
 
         return true;
