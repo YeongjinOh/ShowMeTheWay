@@ -23,7 +23,7 @@
         <activity android:name=".AccountSetActivity"></activity>
         <activity android:name=".RankActivity"></activity>
         <activity android:name=".GameRuleActivity"></activity>
-        <activity android:name=".SpinControlActivity"></activity>
+
         <meta-data android:name="com.facebook.sdk.ApplicationId"
                     android:value="@string/facebook_app_id"/>
         <activity android:name="com.facebook.FacebookActivity"

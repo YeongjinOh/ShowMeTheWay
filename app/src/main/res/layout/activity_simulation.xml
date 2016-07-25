@@ -109,11 +109,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             >
-            <ImageView
+            <com.billiard.yeongjinoh.showmetheway.SpinControlView
                 android:id="@+id/imgViewSpinControl"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="8dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
                 android:padding="5dp"
                 android:background="@drawable/button_selector"
                 android:src="@drawable/white_ball"

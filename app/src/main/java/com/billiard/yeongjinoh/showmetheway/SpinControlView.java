@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
@@ -59,6 +60,9 @@ public class SpinControlView extends ImageView implements View.OnTouchListener {
         canvas.drawCircle(x,height/2,radius,paint);
     }
 
+    public float getSpin() {
+        return (2.0F*x/width-1.0F);
+    }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {

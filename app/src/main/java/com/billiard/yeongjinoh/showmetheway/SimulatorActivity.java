@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Date;
 
@@ -37,9 +38,11 @@ public class SimulatorActivity extends Activity implements UpdateListener {
     private boolean isHitPressed;
     private float power;
 
+    // to controll spin
+    SpinControlView spinContorller;
+
     // request codes for the other activities
     public static final int REQUEST_CODE_GAMEOVER = 1001;
-    public static final int REQUEST_CODE_SPINCONTROLLER = 1002;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +86,8 @@ public class SimulatorActivity extends Activity implements UpdateListener {
                     if (isHitPressed) {
                         new PowerUpdateThread().start();
                     } else {
-                        billiardTableView.hit(power);
+                        float spin = spinContorller.getSpin();
+                        billiardTableView.hit(power, spin);
                         isRunning = true;
                     }
                 }
@@ -92,14 +96,7 @@ public class SimulatorActivity extends Activity implements UpdateListener {
         });
 
         // set spin controller
-        ImageView spinContorller = (ImageView) findViewById(R.id.imgViewSpinControl);
-        spinContorller.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent= new Intent(getApplicationContext(), SpinControlActivity.class);
-                startActivityForResult(intent, REQUEST_CODE_SPINCONTROLLER);
-            }
-        });
+        spinContorller = (SpinControlView) findViewById(R.id.imgViewSpinControl);
     }
 
     class PowerUpdateThread extends Thread {

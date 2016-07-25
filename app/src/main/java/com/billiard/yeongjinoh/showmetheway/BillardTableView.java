@@ -123,7 +123,7 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
         UpdateListener.onScoreUpdate(score);
     }
 
-    public void hit(float power) {
+    public void hit(float power, float spin) {
         if (!isStart) {
 
             // reset flags
