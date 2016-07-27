@@ -32,7 +32,7 @@
                                android:layout_height="30dp"
                                android:layout_margin="10dp"
                                android:layout_alignParentLeft="true"
-                               android:text="Menu"
+                               android:text="Back"
                                android:textSize="15dp"
                                android:background="@drawable/button_selector"
                                />

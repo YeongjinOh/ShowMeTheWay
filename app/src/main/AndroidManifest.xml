@@ -23,6 +23,8 @@
         <activity android:name=".AccountSetActivity"></activity>
         <activity android:name=".RankActivity"></activity>
         <activity android:name=".GameRuleActivity"></activity>
+        <activity android:name=".GoHomeActivity"
+            android:theme="@style/Theme.AppCompat.Light.Dialog"></activity>
 
         <meta-data android:name="com.facebook.sdk.ApplicationId"
                     android:value="@string/facebook_app_id"/>

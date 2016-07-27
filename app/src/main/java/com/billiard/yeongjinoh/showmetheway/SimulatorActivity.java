@@ -43,6 +43,7 @@ public class SimulatorActivity extends Activity implements UpdateListener {
 
     // request codes for the other activities
     public static final int REQUEST_CODE_GAMEOVER = 1001;
+    public static final int REQUEST_CODE_GOHOME = 1002;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +71,8 @@ public class SimulatorActivity extends Activity implements UpdateListener {
         buttonSimulMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                Intent intent = new Intent(getApplicationContext(), GoHomeActivity.class);
+                startActivityForResult(intent, REQUEST_CODE_GOHOME);
             }
         });
 
@@ -168,7 +170,7 @@ public class SimulatorActivity extends Activity implements UpdateListener {
         super.onActivityResult(requestCode, resultCode, intent);
 
         // for gameover activity
-        if (requestCode == REQUEST_CODE_GAMEOVER) {
+        if (requestCode == REQUEST_CODE_GAMEOVER || requestCode == REQUEST_CODE_GOHOME) {
             if (resultCode == RESULT_OK) { // Retry button pressed
             } else if (resultCode == RESULT_CANCELED) { // Exit button pressed
                 finish();

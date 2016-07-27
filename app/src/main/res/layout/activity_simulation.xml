@@ -31,7 +31,7 @@
                 android:layout_width="60dp"
                 android:layout_height="30dp"
                 android:layout_margin="10dp"
-                android:text="Menu"
+                android:text="Home"
                 android:textSize="15dp"
                 android:background="@drawable/button_selector3"
                 />
