@@ -30,14 +30,14 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
 
     // constants for physical system
     private final float dt = 0.01F;
-    private final float maximumPower = 10000.0F;
+    private final float maximumPower = 12000.0F;
     private final float surfaceFrictionalRatio = 0.15F;
     private final float cushionConflictChangeRatio = 0.9F;
     private final float ballConflictChangeRatio = 0.85F;
-    private final float spinReductionRatio = 0.3F;
+    private final float spinReductionRatio = 0.1F;
     private final float mass = 0.23F;
     private final float pushTime = 0.05F;
-    private final float angularSpeedRatio = 0.3F;
+    private final float angularSpeedRatio = 0.9F;
     private float angularSpeed; // angular speed of white ball
 
 
@@ -47,11 +47,13 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
     public boolean isStart = false;
     private Bitmap table;
     private final int DEFAULT_LIFE = 3;
+    private Paint yellow;
 
     // flags to calculate score;
-    private boolean hitRed1, hitRed2, hitYellow;
-    private int life;
+    private boolean hitRed1, hitRed2, hitYellow, hitOnlyOneRed;
     private int stage;
+    private int life;
+
     private UpdateListener UpdateListener;
 
     public BillardTableView(Context context, AttributeSet attrs) {
@@ -82,7 +84,7 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
         // initialize paint
         Paint white = new Paint();
         white.setColor(Color.WHITE);
-        Paint yellow = new Paint();
+        yellow = new Paint();
         yellow.setColor(Color.YELLOW);
         Paint red = new Paint();
         red.setColor(Color.RED);
@@ -138,6 +140,7 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
             hitRed1 = false;
             hitRed2 = false;
             hitYellow = false;
+            hitOnlyOneRed = false;
 
             float force = maximumPower*power;
             Ball white = balls.get(0);
@@ -250,20 +253,36 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
 
             // check conflict with cushion
             if ((x < radius && Vx < 0.0F)|| (x > width-radius && Vx > 0.0F)) {
-                float increaseAngularSpeed = -spinReductionRatio*angularSpeed;
-                double inSqrt = (double)(2.0F/5.0F*radiusM*radiusM*(-increaseAngularSpeed)*(2*angularSpeed+increaseAngularSpeed));
-                float nextVy = Vy + signVx*signW*(float)Math.sqrt(inSqrt);
-                ball.setVy(nextVy);
-                angularSpeed += increaseAngularSpeed;
-                ball.setVx(-Vx*cushionConflictChangeRatio);
+                if (i==0) {
+                    float increaseAngularSpeed = -spinReductionRatio * angularSpeed;
+                    double inSqrt = (double) (2.0F / 5.0F * radiusM * radiusM * (-increaseAngularSpeed) * (2 * angularSpeed + increaseAngularSpeed));
+                    float nextVy = Vy + signVx * signW * (float) Math.sqrt(inSqrt);
+                    float nextVx = -Vx;
+                    float scaleFactor = (float) Math.sqrt((double) ((Vnorm * Vnorm + (float) inSqrt) / (nextVx * nextVx + nextVy * nextVy)));
+                    nextVy *= scaleFactor;
+                    nextVx *= scaleFactor * cushionConflictChangeRatio;
+                    ball.setVx(nextVx);
+                    ball.setVy(nextVy);
+                    angularSpeed += increaseAngularSpeed;
+                } else {
+                    ball.setVx(-Vx*cushionConflictChangeRatio);
+                }
             }
             if ((y < radius && Vy < 0.0F) || (y > height-radius && Vy > 0.0F)) {
-                float increaseAngularSpeed = -spinReductionRatio*angularSpeed;
-                double inSqrt = (double)(2.0F/5.0F*radiusM*radiusM*(-increaseAngularSpeed)*(2*angularSpeed+increaseAngularSpeed));
-                float nextVx = Vx - signVy*signW*(float)Math.sqrt(inSqrt);
-                ball.setVx(nextVx);
-                angularSpeed += increaseAngularSpeed;
-                ball.setVy(-Vy*cushionConflictChangeRatio);
+                if (i==0) {
+                    float increaseAngularSpeed = -spinReductionRatio * angularSpeed;
+                    double inSqrt = (double) (2.0F / 5.0F * radiusM * radiusM * (-increaseAngularSpeed) * (2 * angularSpeed + increaseAngularSpeed));
+                    float nextVx = Vx - signVy * signW * (float) Math.sqrt(inSqrt);
+                    float nextVy = -Vy;
+                    float scaleFactor = (float) Math.sqrt((double) ((Vnorm * Vnorm + (float) inSqrt) / (nextVx * nextVx + nextVy * nextVy)));
+                    nextVx *= scaleFactor;
+                    nextVy *= scaleFactor * cushionConflictChangeRatio;
+                    ball.setVx(nextVx);
+                    ball.setVy(nextVy);
+                    angularSpeed += increaseAngularSpeed;
+                } else {
+                    ball.setVy(-Vy*cushionConflictChangeRatio);
+                }
             }
         }
 
@@ -365,7 +384,9 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
             life--;
             UpdateListener.onLifeUpdate(life,score);
         } else if (hitRed1 && hitRed2) {
-            score += (10 * (int)Math.pow(2,stage-1));
+            score += 10*(balls.size()-3);
+        } else {
+            hitOnlyOneRed = true;
         }
         UpdateListener.onScoreUpdate(score);
         stage++;
@@ -420,11 +441,11 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
 
                     if (checkAllStop() || cnt*dt > 50) {
                         cnt = 0;
-                        Paint yellow = new Paint();
-                        yellow.setColor(Color.YELLOW);
-                        AddBall(yellow);
                         isStart = false;
                         updateScore();
+                        if (hitOnlyOneRed) {
+                            AddBall(yellow);
+                        }
                         postInvalidate();
                         while(!isStart){}
                     }
