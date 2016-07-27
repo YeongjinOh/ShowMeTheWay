@@ -30,13 +30,19 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
 
     // constants for physical system
     private final float dt = 0.01F;
-    private final float maximumPower = 4000.0F;
+    private final float maximumPower = 10000.0F;
     private final float surfaceFrictionalRatio = 0.15F;
     private final float cushionConflictChangeRatio = 0.9F;
     private final float ballConflictChangeRatio = 0.85F;
+    private final float spinReductionRatio = 0.3F;
+    private final float mass = 0.23F;
+    private final float pushTime = 0.05F;
+    private final float angularSpeedRatio = 0.3F;
+    private float angularSpeed; // angular speed of white ball
+
 
     // the other global variables
-    private double angle = Math.PI/4;
+    private double angle = Math.PI/2;
     private int score;
     public boolean isStart = false;
     private Bitmap table;
@@ -87,6 +93,8 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
         AddBall(red);
         AddBall(red);
         AddBall(yellow);
+        balls.get(0).setX(width/2);
+        balls.get(0).setY(height/2);
 
         score = 0;
         life = DEFAULT_LIFE;
@@ -131,9 +139,11 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
             hitRed2 = false;
             hitYellow = false;
 
+            float force = maximumPower*power;
             Ball white = balls.get(0);
-            white.setVx(-maximumPower*power*(float)Math.cos(angle));
-            white.setVy(-maximumPower*power*(float)Math.sin(angle));
+            white.setVx(-force/mass*pushTime*(float)Math.cos(angle));
+            white.setVy(-force/mass*pushTime*(float)Math.sin(angle));
+            angularSpeed = (radius*spin)*(force/mass*pushTime)*angularSpeedRatio;
             isStart = true;
         }
     }
@@ -221,6 +231,7 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
                 Vx = Vx * (1 - surfaceFrictionalRatio*dt);
                 Vy = Vy * (1 - surfaceFrictionalRatio*dt);
             }
+            angularSpeed = angularSpeed * (1 - surfaceFrictionalRatio*dt);
 
             // update position
             x += Vx*dt;
@@ -232,11 +243,26 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
             ball.setVx(Vx);
             ball.setVy(Vy);
 
+            float signVy = sign(Vy);
+            float signVx = sign(Vx);
+            float signW = sign(angularSpeed);
+            float radiusM = radius/1000.0F;
+
             // check conflict with cushion
-            if ((x < radius && Vx < 0)|| (x > width-radius && Vx > 0)) {
+            if ((x < radius && Vx < 0.0F)|| (x > width-radius && Vx > 0.0F)) {
+                float increaseAngularSpeed = -spinReductionRatio*angularSpeed;
+                double inSqrt = (double)(2.0F/5.0F*radiusM*radiusM*(-increaseAngularSpeed)*(2*angularSpeed+increaseAngularSpeed));
+                float nextVy = Vy + signVx*signW*(float)Math.sqrt(inSqrt);
+                ball.setVy(nextVy);
+                angularSpeed += increaseAngularSpeed;
                 ball.setVx(-Vx*cushionConflictChangeRatio);
             }
-            if ((y < radius && Vy < 0) || (y > height-radius && Vy > 0)) {
+            if ((y < radius && Vy < 0.0F) || (y > height-radius && Vy > 0.0F)) {
+                float increaseAngularSpeed = -spinReductionRatio*angularSpeed;
+                double inSqrt = (double)(2.0F/5.0F*radiusM*radiusM*(-increaseAngularSpeed)*(2*angularSpeed+increaseAngularSpeed));
+                float nextVx = Vx - signVy*signW*(float)Math.sqrt(inSqrt);
+                ball.setVx(nextVx);
+                angularSpeed += increaseAngularSpeed;
                 ball.setVy(-Vy*cushionConflictChangeRatio);
             }
         }
@@ -283,6 +309,14 @@ public class BillardTableView extends ImageView implements View.OnTouchListener 
             }
         }
 
+    }
+
+    // sign of given number
+    private float sign (float num) {
+        if (num > 0)
+            return 1.0F;
+        else
+            return -1.0F;
     }
 
     // check if the given position with default radius doesn't have conflict with any other balls
